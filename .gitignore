@@ -1,1 +1,22 @@
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# Python byte code & caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Vercel & IDE
 .vercel
+.vscode/
+.idea/
+
+# Environment variables
+.env
+
+# OS files
+Thumbs.db
+.DS_Store
