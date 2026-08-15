@@ -1,0 +1,8 @@
+{
+  "name": "ai-face-analyzer",
+  "version": "0.2.0",
+  "private": true,
+  "scripts": {
+    "vercel-build": "pip install --no-deps mediapipe && pip install -r requirements.txt"
+  }
+}

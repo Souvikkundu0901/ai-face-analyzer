@@ -1,0 +1,11 @@
+fastapi>=0.110.0
+opencv-python-headless>=4.9.0.80
+numpy>=1.26.0
+pydantic>=2.6.0
+pillow>=10.2.0
+python-multipart>=0.0.9
+absl-py>=1.4.0
+flatbuffers>=2.0
+protobuf>=3.11.0
+attrs>=21.4.0
+mediapipe>=0.10.11

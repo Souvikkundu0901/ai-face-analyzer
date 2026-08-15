@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Face Analyzer — Skin & Facial Geometry Insights</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-pink: #ff659d;
+      --primary-hover: #f43f7d;
+      --pink-light: #ffe6f0;
+      --pink-soft: #fff2f6;
+      --pink-subtle: #fff8fa;
+      --text-dark: #1e293b;
+      --text-muted: #64748b;
+      --text-subtle: #94a3b8;
+      --bg-page: #fdfafb;
+      --bg-card: #ffffff;
+      --border-light: #f1e4ea;
+      --border-subtle: #f8eaf0;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --shadow-sm: 0 2px 6px rgba(255, 101, 157, 0.06);
+      --shadow-md: 0 8px 24px rgba(255, 101, 157, 0.09);
+      --shadow-lg: 0 16px 36px rgba(0, 0, 0, 0.06);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-dark);
+      line-height: 1.5;
+      padding: 24px 16px 60px;
+      min-height: 100vh;
+    }
+
+    .app-container {
+      max-width: 1140px;
+      margin: 0 auto;
+    }
+
+    /* Header & Branding */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+      padding: 8px 0;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo-icon {
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(135deg, #ff659d 0%, #ff8fb7 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(255, 101, 157, 0.3);
+    }
+
+    .brand-titles h1 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text-dark);
+    }
+
+    .brand-titles h1 span {
+      color: var(--primary-pink);
+    }
+
+    .brand-titles p {
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      background: #ecfdf5;
+      color: #065f46;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--success);
+    }
+
+    /* Main Grid */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 28px;
+    }
+
+    @media (max-width: 960px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Cards */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 20px;
+      transition: box-shadow 0.25s ease;
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-md);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-title-icon {
+      color: var(--primary-pink);
+    }
+
+    /* Upload & Capture */
+    .dropzone {
+      border: 2px dashed #f8b4cb;
+      border-radius: var(--radius-md);
+      padding: 34px 20px;
+      text-align: center;
+      cursor: pointer;
+      background: var(--pink-subtle);
+      transition: all 0.2s ease;
+    }
+
+    .dropzone:hover, .dropzone.dragover {
+      border-color: var(--primary-pink);
+      background: var(--pink-light);
+      transform: translateY(-1px);
+    }
+
+    .dropzone-icon-wrap {
+      width: 52px;
+      height: 52px;
+      margin: 0 auto 12px;
+      background: #ffffff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary-pink);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .dropzone-icon-wrap svg {
+      width: 26px;
+      height: 26px;
+    }
+
+    .dropzone-text strong {
+      color: var(--text-dark);
+      font-size: 0.9375rem;
+    }
+
+    .dropzone-text p {
+      font-size: 0.775rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Sample Selector */
+    .sample-pill-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    .sample-pill {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      padding: 4px 10px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .sample-pill:hover {
+      background: var(--pink-light);
+      color: var(--primary-pink);
+      border-color: #f8b4cb;
+    }
+
+    /* Buttons */
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 11px 18px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      border-radius: var(--radius-md);
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #ff659d 0%, #ff4785 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(255, 101, 157, 0.35);
+      flex: 1;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #f43f7d 0%, #e11d60 100%);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: #f8fafc;
+      color: var(--text-dark);
+      border: 1px solid var(--border-light);
+    }
+
+    .btn-secondary:hover {
+      background: #f1f5f9;
+    }
+
+    .btn-outline-pink {
+      background: #ffffff;
+      color: var(--primary-pink);
+      border: 1.5px solid var(--primary-pink);
+    }
+
+    .btn-outline-pink:hover {
+      background: var(--pink-light);
+    }
+
+    .btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    /* Image Preview Viewport */
+    .preview-box {
+      margin-top: 16px;
+      position: relative;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--border-light);
+      background: #0f172a;
+      min-height: 260px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .preview-box img, .preview-box video {
+      width: 100%;
+      height: auto;
+      max-height: 420px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .view-toggle-bar {
+      display: flex;
+      gap: 6px;
+      background: #f1f5f9;
+      padding: 4px;
+      border-radius: 10px;
+      margin-top: 12px;
+    }
+
+    .toggle-tab {
+      flex: 1;
+      text-align: center;
+      padding: 6px 12px;
+      font-size: 0.775rem;
+      font-weight: 600;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .toggle-tab.active {
+      background: #ffffff;
+      color: var(--primary-pink);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    /* Alert Banner */
+    .alert-banner {
+      padding: 12px 18px;
+      border-radius: var(--radius-md);
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .alert-banner.danger {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+    }
+
+    /* Results Header Score Ring */
+    .overview-hero-card {
+      background: linear-gradient(135deg, #fff0f5 0%, #ffffff 100%);
+      border: 1px solid #fbd2e1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 22px 28px;
+    }
+
+    .hero-metric-block {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .score-circle-wrap {
+      width: 78px;
+      height: 78px;
+      border-radius: 50%;
+      background: #ffffff;
+      box-shadow: 0 4px 14px rgba(255, 101, 157, 0.18);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 3px solid var(--primary-pink);
+      flex-shrink: 0;
+    }
+
+    .score-circle-num {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--primary-pink);
+      line-height: 1;
+    }
+
+    .score-circle-label {
+      font-size: 0.625rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .hero-text-block h2 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text-dark);
+    }
+
+    .hero-text-block p {
+      font-size: 0.825rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Metric Grid Tiles */
+    .stats-tiles-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 680px) {
+      .stats-tiles-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .stat-tile {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-tile::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--primary-pink);
+      opacity: 0.8;
+    }
+
+    .stat-tile-label {
+      font-size: 0.725rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: var(--text-muted);
+    }
+
+    .stat-tile-val {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      margin: 4px 0 2px;
+    }
+
+    .stat-tile-sub {
+      font-size: 0.725rem;
+      font-weight: 600;
+      color: var(--primary-pink);
+    }
+
+    /* Progress Rows */
+    .skin-meter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .skin-meter-row {
+      background: #faf7f8;
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 14px 16px;
+    }
+
+    .skin-meter-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .meter-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .meter-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--primary-pink);
+    }
+
+    .meter-name {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    .meter-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background: var(--pink-light);
+      color: var(--primary-pink);
+    }
+
+    .meter-track {
+      height: 8px;
+      background: #e9ecef;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .meter-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #ff8fb7 0%, #ff659d 100%);
+      border-radius: 6px;
+      transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Geometry Ratios Table */
+    .ratios-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 0.8125rem;
+    }
+
+    .ratios-table tr {
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .ratios-table td {
+      padding: 10px 6px;
+      color: var(--text-muted);
+    }
+
+    .ratios-table td:last-child {
+      text-align: right;
+      font-weight: 700;
+      color: var(--text-dark);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Modal / JSON Drawer */
+    .collapsible-drawer {
+      background: #0f172a;
+      border-radius: var(--radius-md);
+      padding: 16px;
+      color: #e2e8f0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.775rem;
+      max-height: 280px;
+      overflow-y: auto;
+    }
+
+    /* Spinner */
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      border-top-color: #ffffff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Printable Report Sheet Styling */
+    @media print {
+      body {
+        background: #ffffff;
+        padding: 0;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .print-only {
+        display: block !important;
+      }
+      .card {
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+        break-inside: avoid;
+      }
+    }
+
+    .print-only {
+      display: none;
+    }
+
+    .report-header-print {
+      border-bottom: 2px solid var(--primary-pink);
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="no-print">
+      <div class="brand-group">
+        <div class="brand-logo-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+        </div>
+        <div class="brand-titles">
+          <h1>AI Face <span>Analyzer</span></h1>
+          <p>Facial geometry proportions & visible skin heuristics</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="status-pill">
+          <span class="status-dot"></span> Pipeline v0.2.0 Active
+        </div>
+        <button class="btn btn-outline-pink hidden" id="btn-export-pdf" style="padding: 7px 14px; font-size: 0.8125rem;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          Export PDF Report
+        </button>
+      </div>
+    </header>
+
+    <!-- Error Alert Banner -->
+    <div id="alert-banner" class="alert-banner danger no-print">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+      <span id="alert-msg"></span>
+    </div>
+
+    <!-- Dashboard Content -->
+    <div class="dashboard-grid">
+      
+      <!-- Left Column: Image Input & Visual Preview -->
+      <div>
+        <div class="card no-print">
+          <div class="card-header">
+            <span class="card-title">
+              <span class="card-title-icon">📷</span> Capture / Upload
+            </span>
+            <span id="scan-id-tag" style="font-size: 0.725rem; font-family: monospace; color: var(--text-muted);"></span>
+          </div>
+
+          <div class="dropzone" id="dropzone">
+            <div class="dropzone-icon-wrap">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>
+            </div>
+            <div class="dropzone-text">
+              <strong>Click to upload selfie</strong>
+              <p>Drag & drop JPEG or PNG image</p>
+            </div>
+            <input type="file" id="file-input" accept="image/jpeg, image/png" style="display: none;">
+          </div>
+
+          <!-- Quick Test Samples -->
+          <div style="margin-top: 12px;">
+            <span style="font-size: 0.725rem; font-weight: 700; color: var(--text-subtle); text-transform: uppercase;">Quick Test Samples:</span>
+            <div class="sample-pill-row">
+              <span class="sample-pill" data-sample="sample1.jpg">Neutral Selfie</span>
+              <span class="sample-pill" data-sample="sample2.jpg">Warm Tone</span>
+              <span class="sample-pill" data-sample="sample_flushed.jpg">Flushed Skin</span>
+              <span class="sample-pill" data-sample="sample_blurry.jpg">Blurry Test</span>
+            </div>
+          </div>
+
+          <div class="btn-group">
+            <button class="btn btn-secondary" id="btn-camera">Use Camera</button>
+            <button class="btn btn-primary" id="btn-analyze" disabled>
+              <span id="btn-text">Analyze Face</span>
+            </button>
+          </div>
+
+          <!-- Preview & Toggle -->
+          <div class="preview-box hidden" id="preview-box">
+            <img id="preview-img" alt="Selfie Preview" />
+            <video id="webcam-video" autoplay playsinline class="hidden"></video>
+          </div>
+
+          <div class="btn-group hidden" id="camera-controls">
+            <button class="btn btn-primary" id="btn-capture">Snap Photo</button>
+            <button class="btn btn-secondary" id="btn-cancel-cam">Cancel</button>
+          </div>
+
+          <div class="view-toggle-bar hidden" id="view-toggle-bar">
+            <button class="toggle-tab active" id="tab-overlay">Debug Overlay</button>
+            <button class="toggle-tab" id="tab-original">Original Photo</button>
+          </div>
+        </div>
+
+        <!-- Quality Gate Summary -->
+        <div class="card hidden" id="quality-card">
+          <div class="card-header">
+            <span class="card-title">
+              <span class="card-title-icon">🛡️</span> Image Quality Gate
+            </span>
+            <span class="status-pill" id="gate-badge">Passed</span>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+            <div style="background: #faf7f8; padding: 10px; border-radius: 10px; text-align: center;">
+              <div style="font-size: 0.675rem; color: var(--text-muted); font-weight: 700;">SHARPNESS</div>
+              <div style="font-size: 1.15rem; font-weight: 800;" id="q-sharpness">-</div>
+            </div>
+            <div style="background: #faf7f8; padding: 10px; border-radius: 10px; text-align: center;">
+              <div style="font-size: 0.675rem; color: var(--text-muted); font-weight: 700;">LIGHTING</div>
+              <div style="font-size: 1.15rem; font-weight: 800;" id="q-lighting">-</div>
+            </div>
+            <div style="background: #faf7f8; padding: 10px; border-radius: 10px; text-align: center;">
+              <div style="font-size: 0.675rem; color: var(--text-muted); font-weight: 700;">POSE SCORE</div>
+              <div style="font-size: 1.15rem; font-weight: 800;" id="q-pose">-</div>
+            </div>
+          </div>
+          <div id="warnings-box" style="margin-top: 10px;"></div>
+        </div>
+      </div>
+
+      <!-- Right Column: Analysis Results & Insights -->
+      <div>
+        
+        <!-- Welcome / Empty State Placeholder -->
+        <div class="card" id="empty-state" style="text-align: center; padding: 48px 24px;">
+          <div style="font-size: 2.4rem; margin-bottom: 12px;">✨</div>
+          <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-dark);">Ready for Facial Analysis</h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted); max-width: 380px; margin: 6px auto 0;">
+            Upload or snap a selfie to extract proportional facial geometry, shape classification, and visible skin metrics.
+          </p>
+        </div>
+
+        <!-- Printable Report Header (Active on print) -->
+        <div class="print-only report-header-print">
+          <h1 style="color: var(--primary-pink); font-size: 1.6rem; font-weight: 800;">AI Face Analyzer — Analysis Report</h1>
+          <p style="font-size: 0.85rem; color: var(--text-muted);">Generated on <span id="report-date"></span> | Scan ID: <span id="report-scan-id"></span></p>
+        </div>
+
+        <!-- Results Overview Card -->
+        <div class="card overview-hero-card hidden" id="results-hero">
+          <div class="hero-metric-block">
+            <div class="score-circle-wrap">
+              <span class="score-circle-num" id="overall-score">85</span>
+              <span class="score-circle-label">Score</span>
+            </div>
+            <div class="hero-text-block">
+              <h2>Facial Analysis Report</h2>
+              <p id="hero-shape-summary">Classified Face Shape: <strong>Oval</strong></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 Summary Tiles -->
+        <div class="stats-tiles-grid hidden" id="summary-tiles">
+          <div class="stat-tile">
+            <div class="stat-tile-label">Symmetry</div>
+            <div class="stat-tile-val" id="tile-symmetry">94%</div>
+            <div class="stat-tile-sub">Bilateral Balance</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-tile-label">Face Shape</div>
+            <div class="stat-tile-val" id="tile-shape" style="color: var(--primary-pink); font-size: 1.15rem;">OVAL</div>
+            <div class="stat-tile-sub" id="tile-shape-conf">92% Conf</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-tile-label">Visible Spots</div>
+            <div class="stat-tile-val" id="tile-spots">1</div>
+            <div class="stat-tile-sub">Detected Regions</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-tile-label">Skin Clarity</div>
+            <div class="stat-tile-val" id="tile-clarity">88%</div>
+            <div class="stat-tile-sub">Texture Uniformity</div>
+          </div>
+        </div>
+
+        <!-- Skin Analysis Card -->
+        <div class="card hidden" id="skin-card">
+          <div class="card-header">
+            <span class="card-title">
+              <span class="card-title-icon">🌸</span> Visible Skin Characteristics
+            </span>
+            <span style="font-size: 0.75rem; color: var(--text-muted);">Classical OpenCV Heuristics</span>
+          </div>
+
+          <div class="skin-meter-group">
+            <div class="skin-meter-row">
+              <div class="skin-meter-header">
+                <div class="meter-title-wrap">
+                  <div class="meter-dot" style="background: #f43f5e;"></div>
+                  <span class="meter-name">Redness Index</span>
+                </div>
+                <span class="meter-badge" id="badge-redness">Mild (35%)</span>
+              </div>
+              <div class="meter-track"><div class="meter-fill" id="fill-redness" style="width: 35%;"></div></div>
+            </div>
+
+            <div class="skin-meter-row">
+              <div class="skin-meter-header">
+                <div class="meter-title-wrap">
+                  <div class="meter-dot" style="background: #fbbf24;"></div>
+                  <span class="meter-name">Pigmentation Variance</span>
+                </div>
+                <span class="meter-badge" id="badge-pigmentation">Moderate (45%)</span>
+              </div>
+              <div class="meter-track"><div class="meter-fill" id="fill-pigmentation" style="width: 45%;"></div></div>
+            </div>
+
+            <div class="skin-meter-row">
+              <div class="skin-meter-header">
+                <div class="meter-title-wrap">
+                  <div class="meter-dot" style="background: #10b981;"></div>
+                  <span class="meter-name">Surface Texture Roughness</span>
+                </div>
+                <span class="meter-badge" id="badge-texture">Smooth (15%)</span>
+              </div>
+              <div class="meter-track"><div class="meter-fill" id="fill-texture" style="width: 15%;"></div></div>
+            </div>
+
+            <div class="skin-meter-row">
+              <div class="skin-meter-header">
+                <div class="meter-title-wrap">
+                  <div class="meter-dot" style="background: #8b5cf6;"></div>
+                  <span class="meter-name">Under-Eye Shade Contrast</span>
+                </div>
+                <span class="meter-badge" id="badge-undereye">Normal (10%)</span>
+              </div>
+              <div class="meter-track"><div class="meter-fill" id="fill-undereye" style="width: 10%;"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Face Geometry Card -->
+        <div class="card hidden" id="geometry-card">
+          <div class="card-header">
+            <span class="card-title">
+              <span class="card-title-icon">📐</span> Proportional Facial Geometry
+            </span>
+            <span style="font-size: 0.75rem; color: var(--text-muted);">478 Landmark Coordinates</span>
+          </div>
+
+          <table class="ratios-table">
+            <tbody>
+              <tr>
+                <td>Face Height to Width Ratio</td>
+                <td id="geo-face-ratio">-</td>
+              </tr>
+              <tr>
+                <td>Jaw Width to Face Width</td>
+                <td id="geo-jaw-ratio">-</td>
+              </tr>
+              <tr>
+                <td>Forehead Width to Face Width</td>
+                <td id="geo-forehead-ratio">-</td>
+              </tr>
+              <tr>
+                <td>Inter-Eye Distance to Face Width</td>
+                <td id="geo-eye-ratio">-</td>
+              </tr>
+              <tr>
+                <td>Nose Width to Face Width</td>
+                <td id="geo-nose-ratio">-</td>
+              </tr>
+              <tr>
+                <td>Lip Width to Face Width</td>
+                <td id="geo-lip-ratio">-</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Developer JSON Drawer (Collapsible) -->
+        <div class="card no-print">
+          <div class="card-header" style="margin-bottom: 10px; cursor: pointer;" id="toggle-json-drawer">
+            <span class="card-title" style="font-size: 0.9rem;">
+              <span class="card-title-icon">⚙️</span> Developer JSON Contract
+            </span>
+            <span style="font-size: 0.75rem; color: var(--primary-pink); font-weight: 600;" id="json-drawer-status">Click to Expand</span>
+          </div>
+          <pre class="collapsible-drawer hidden" id="raw-json">// Run an analysis to inspect structured schema</pre>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let selectedFile = null;
+    let originalDataUrl = null;
+    let overlayDataUrl = null;
+    let activeStream = null;
+    let currentAnalysisData = null;
+
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('file-input');
+    const btnAnalyze = document.getElementById('btn-analyze');
+    const btnText = document.getElementById('btn-text');
+    const previewBox = document.getElementById('preview-box');
+    const previewImg = document.getElementById('preview-img');
+    const alertBanner = document.getElementById('alert-banner');
+    const alertMsg = document.getElementById('alert-msg');
+    const rawJson = document.getElementById('raw-json');
+
+    const viewToggleBar = document.getElementById('view-toggle-bar');
+    const tabOverlay = document.getElementById('tab-overlay');
+    const tabOriginal = document.getElementById('tab-original');
+    const btnExportPdf = document.getElementById('btn-export-pdf');
+
+    // UI Result Elements
+    const emptyState = document.getElementById('empty-state');
+    const resultsHero = document.getElementById('results-hero');
+    const summaryTiles = document.getElementById('summary-tiles');
+    const skinCard = document.getElementById('skin-card');
+    const geometryCard = document.getElementById('geometry-card');
+    const qualityCard = document.getElementById('quality-card');
+
+    // File Drop & Select
+    dropzone.addEventListener('click', () => fileInput.click());
+    dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('dragover');
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        handleFileSelect(e.dataTransfer.files[0]);
+      }
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files[0]) {
+        handleFileSelect(e.target.files[0]);
+      }
+    });
+
+    // Sample Picker
+    document.querySelectorAll('.sample-pill').forEach(pill => {
+      pill.addEventListener('click', async () => {
+        const sampleName = pill.getAttribute('data-sample');
+        try {
+          const res = await fetch(`/static/../tests/sample_images/${sampleName}`);
+          if (!res.ok) {
+            // Try fetching from direct endpoint or mock
+            const blob = await fetchSampleBlob(sampleName);
+            if (blob) handleFileSelect(new File([blob], sampleName, { type: 'image/jpeg' }));
+            return;
+          }
+          const blob = await res.blob();
+          handleFileSelect(new File([blob], sampleName, { type: 'image/jpeg' }));
+        } catch (e) {
+          console.warn('Sample load error:', e);
+        }
+      });
+    });
+
+    async function fetchSampleBlob(name) {
+      const paths = [
+        `/tests/sample_images/${name}`,
+        `/tests/sample_images/good_lighting/${name}`,
+        `/tests/sample_images/varied_skin_tones/${name}`,
+        `/tests/sample_images/blurry/${name}`
+      ];
+      for (let p of paths) {
+        try {
+          let r = await fetch(p);
+          if (r.ok) return await r.blob();
+        } catch (_) {}
+      }
+      return null;
+    }
+
+    function handleFileSelect(file) {
+      if (!['image/jpeg', 'image/png', 'image/jpg'].includes(file.type)) {
+        showAlert('Please upload a valid JPEG or PNG selfie photo.');
+        return;
+      }
+      hideAlert();
+      selectedFile = file;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        originalDataUrl = e.target.result;
+        overlayDataUrl = null;
+        previewImg.src = originalDataUrl;
+        previewBox.classList.remove('hidden');
+        previewImg.classList.remove('hidden');
+        document.getElementById('webcam-video').classList.add('hidden');
+        document.getElementById('camera-controls').classList.add('hidden');
+        viewToggleBar.classList.add('hidden');
+        btnAnalyze.disabled = false;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Camera Support
+    const btnCamera = document.getElementById('btn-camera');
+    const btnCapture = document.getElementById('btn-capture');
+    const btnCancelCam = document.getElementById('btn-cancel-cam');
+    const webcamVideo = document.getElementById('webcam-video');
+    const cameraControls = document.getElementById('camera-controls');
+
+    btnCamera.addEventListener('click', async () => {
+      try {
+        activeStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 1280 } } });
+        webcamVideo.srcObject = activeStream;
+        previewBox.classList.remove('hidden');
+        previewImg.classList.add('hidden');
+        webcamVideo.classList.remove('hidden');
+        cameraControls.classList.remove('hidden');
+        hideAlert();
+      } catch (err) {
+        showAlert('Camera access unavailable: ' + err.message);
+      }
+    });
+
+    btnCapture.addEventListener('click', () => {
+      if (!webcamVideo.videoWidth) return;
+      const canvas = document.createElement('canvas');
+      canvas.width = webcamVideo.videoWidth;
+      canvas.height = webcamVideo.videoHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(webcamVideo, 0, 0);
+      canvas.toBlob((blob) => {
+        selectedFile = new File([blob], 'camera_selfie.jpg', { type: 'image/jpeg' });
+        originalDataUrl = canvas.toDataURL('image/jpeg');
+        overlayDataUrl = null;
+        previewImg.src = originalDataUrl;
+        previewImg.classList.remove('hidden');
+        webcamVideo.classList.add('hidden');
+        cameraControls.classList.add('hidden');
+        viewToggleBar.classList.add('hidden');
+        btnAnalyze.disabled = false;
+        stopCamera();
+      }, 'image/jpeg', 0.95);
+    });
+
+    btnCancelCam.addEventListener('click', () => {
+      stopCamera();
+      webcamVideo.classList.add('hidden');
+      cameraControls.classList.add('hidden');
+      if (originalDataUrl) previewImg.classList.remove('hidden');
+      else previewBox.classList.add('hidden');
+    });
+
+    function stopCamera() {
+      if (activeStream) {
+        activeStream.getTracks().forEach(t => t.stop());
+        activeStream = null;
+      }
+    }
+
+    // Toggle Overlay vs Original
+    tabOverlay.addEventListener('click', () => {
+      if (overlayDataUrl) {
+        previewImg.src = overlayDataUrl;
+        tabOverlay.classList.add('active');
+        tabOriginal.classList.remove('active');
+      }
+    });
+
+    tabOriginal.addEventListener('click', () => {
+      if (originalDataUrl) {
+        previewImg.src = originalDataUrl;
+        tabOriginal.classList.add('active');
+        tabOverlay.classList.remove('active');
+      }
+    });
+
+    // Analyze Action
+    btnAnalyze.addEventListener('click', async () => {
+      if (!selectedFile) return;
+
+      btnAnalyze.disabled = true;
+      btnText.innerHTML = '<span class="spinner"></span> Analyzing...';
+      hideAlert();
+
+      const formData = new FormData();
+      formData.append('image', selectedFile);
+
+      try {
+        const res = await fetch('/api/analyze', {
+          method: 'POST',
+          body: formData
+        });
+
+        const rawText = await res.text();
+        let data = null;
+        try {
+          data = JSON.parse(rawText);
+        } catch (parseErr) {
+          showAlert(`Server error (${res.status}): Server returned a non-JSON response. Please check function logs.`);
+          console.error('Non-JSON response:', rawText);
+          return;
+        }
+
+        currentAnalysisData = data;
+        rawJson.textContent = JSON.stringify(data, null, 2);
+
+        if (!res.ok) {
+          showAlert(`Quality Gate Rejection [${data.reason || 'failed'}]: ${data.message || 'Image rejected.'}`);
+          emptyState.classList.remove('hidden');
+          resultsHero.classList.add('hidden');
+          summaryTiles.classList.add('hidden');
+          skinCard.classList.add('hidden');
+          geometryCard.classList.add('hidden');
+          qualityCard.classList.add('hidden');
+          btnExportPdf.classList.add('hidden');
+          
+          // Fetch rejection diagnostic overlay if available
+          if (data.scan_id) {
+            tryFetchOverlay(data.scan_id);
+          }
+          return;
+        }
+
+        // Render full UI
+        emptyState.classList.add('hidden');
+        renderFullDashboard(data);
+        btnExportPdf.classList.remove('hidden');
+
+        // Fetch debug overlay
+        tryFetchOverlay(data.scan_id);
+
+      } catch (err) {
+        showAlert('Server or network error: ' + err.message);
+      } finally {
+        btnAnalyze.disabled = false;
+        btnText.textContent = 'Analyze Face';
+      }
+    });
+
+    async function tryFetchOverlay(scanId) {
+      try {
+        const overlayRes = await fetch(`/api/analyze/${scanId}/overlay`);
+        if (overlayRes.ok) {
+          const blob = await overlayRes.blob();
+          overlayDataUrl = URL.createObjectURL(blob);
+          previewImg.src = overlayDataUrl;
+          viewToggleBar.classList.remove('hidden');
+          tabOverlay.classList.add('active');
+          tabOriginal.classList.remove('active');
+        }
+      } catch (e) {
+        console.warn('Overlay error:', e);
+      }
+    }
+
+    function renderFullDashboard(data) {
+      document.getElementById('scan-id-tag').textContent = 'ID: ' + data.scan_id.substring(0, 8);
+      document.getElementById('report-scan-id').textContent = data.scan_id;
+      document.getElementById('report-date').textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+
+      // Image Quality Gate Card
+      qualityCard.classList.remove('hidden');
+      const q = data.image_quality;
+      document.getElementById('q-sharpness').textContent = (q.sharpness * 100).toFixed(0) + '%';
+      document.getElementById('q-lighting').textContent = (q.lighting * 100).toFixed(0) + '%';
+      document.getElementById('q-pose').textContent = (q.pose * 100).toFixed(0) + '%';
+
+      const warnBox = document.getElementById('warnings-box');
+      if (data.warnings && data.warnings.length > 0) {
+        warnBox.innerHTML = data.warnings.map(w => `<div style="font-size:0.75rem; color:var(--warning); margin-top:4px;">⚠️ ${w}</div>`).join('');
+      } else {
+        warnBox.innerHTML = '';
+      }
+
+      // Hero Card
+      resultsHero.classList.remove('hidden');
+      const overall = Math.round((q.score * 0.3 + data.face.symmetry_score * 0.35 + (1.0 - data.skin.redness_score * 0.5) * 0.35) * 100);
+      document.getElementById('overall-score').textContent = Math.min(99, Math.max(60, overall));
+      document.getElementById('hero-shape-summary').innerHTML = `Classified Face Shape: <strong style="color:var(--primary-pink); text-transform: capitalize;">${data.face.shape}</strong> (${Math.round(data.face.shape_confidence * 100)}% Confidence)`;
+
+      // Summary 4 Tiles
+      summaryTiles.classList.remove('hidden');
+      document.getElementById('tile-symmetry').textContent = Math.round(data.face.symmetry_score * 100) + '%';
+      document.getElementById('tile-shape').textContent = data.face.shape.toUpperCase();
+      document.getElementById('tile-shape-conf').textContent = Math.round(data.face.shape_confidence * 100) + '% Conf';
+      document.getElementById('tile-spots').textContent = data.skin.visible_spots;
+      const clarity = Math.round((1.0 - data.skin.texture_score * 0.6 - data.skin.pigmentation_score * 0.4) * 100);
+      document.getElementById('tile-clarity').textContent = Math.max(50, clarity) + '%';
+
+      // Skin Characteristics
+      skinCard.classList.remove('hidden');
+      const s = data.skin;
+      setSkinMeter('redness', s.redness_score, 'Redness');
+      setSkinMeter('pigmentation', s.pigmentation_score, 'Pigmentation');
+      setSkinMeter('texture', s.texture_score, 'Texture Roughness');
+      setSkinMeter('undereye', s.under_eye_score, 'Under-Eye Shade');
+
+      // Face Geometry
+      geometryCard.classList.remove('hidden');
+      const r = data.face.ratios;
+      document.getElementById('geo-face-ratio').textContent = data.face.face_ratio.toFixed(2);
+      document.getElementById('geo-jaw-ratio').textContent = r.jaw_width_to_face_width.toFixed(2);
+      document.getElementById('geo-forehead-ratio').textContent = r.forehead_width_to_face_width.toFixed(2);
+      document.getElementById('geo-eye-ratio').textContent = r.eye_distance_to_face_width.toFixed(2);
+      document.getElementById('geo-nose-ratio').textContent = r.nose_width_to_face_width.toFixed(2);
+      document.getElementById('geo-lip-ratio').textContent = r.lip_width_to_face_width.toFixed(2);
+    }
+
+    function setSkinMeter(id, score, name) {
+      const pct = Math.round(score * 100);
+      let badgeLabel = 'Mild';
+      if (pct > 60) badgeLabel = 'Elevated';
+      else if (pct > 30) badgeLabel = 'Moderate';
+      else badgeLabel = 'Optimal';
+
+      document.getElementById(`badge-${id}`).textContent = `${badgeLabel} (${pct}%)`;
+      document.getElementById(`fill-${id}`).style.width = `${pct}%`;
+    }
+
+    // PDF Export / Print Report
+    btnExportPdf.addEventListener('click', () => {
+      window.print();
+    });
+
+    // Developer JSON Drawer Toggle
+    document.getElementById('toggle-json-drawer').addEventListener('click', () => {
+      rawJson.classList.toggle('hidden');
+      const statusEl = document.getElementById('json-drawer-status');
+      statusEl.textContent = rawJson.classList.contains('hidden') ? 'Click to Expand' : 'Click to Collapse';
+    });
+
+    function showAlert(msg) {
+      alertMsg.textContent = msg;
+      alertBanner.style.display = 'flex';
+    }
+
+    function hideAlert() {
+      alertBanner.style.display = 'none';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+venv/
+tests/
+.git/
+.env*
+.system_generated/
+scratch/
+*.md
+*.log
