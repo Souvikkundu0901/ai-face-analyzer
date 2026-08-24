@@ -1,73 +1,151 @@
-# AI Face Analyzer (Phase 2 / Hardening + Visualization)
+# 🧠 AI Face Analyzer
 
-A lightweight, high-performance computer vision pipeline service built with **FastAPI**, **MediaPipe Face Mesh (478 landmarks)**, and **classical OpenCV heuristics** for analyzing facial geometry and visible skin characteristics from selfie photographs.
+A computer vision service that analyzes facial geometry and visible skin
+characteristics from a selfie — built with **FastAPI**, **MediaPipe Face
+Mesh** (478 landmarks), classical **OpenCV** heuristics, and a
+rules-gated **LLM explanation layer**.
 
----
-
-## What's New in Phase 2 (`analysis-v0.2.0`)
-
-1. **Automated Test Harness & Invariant Testing**:
-   - Subfolder test runner across `good_lighting/`, `low_light/`, `blurry/`, `multiple_faces/`, `no_face/`, `extreme_angle/`, `varied_skin_tones/`.
-   - Relative ordering invariant assertions (`redness(flushed) > redness(fair)`, `texture(textured) > texture(fair)`).
-   - Expected qualitative behavior recorded in [`tests/expected/notes.md`](file:///C:/Users/Souvik/OneDrive/Desktop/AI%20face/tests/expected/notes.md).
-
-2. **Centralized Configuration & Calibration**:
-   - All magic numbers, thresholds, and weighting factors centralized in [`app/config.py`](file:///C:/Users/Souvik/OneDrive/Desktop/AI%20face/app/config.py) with full explanatory comments.
-
-3. **Upgraded Visual Debug Overlay**:
-   - Renders exact clean skin mask boundary.
-   - Renders detected spot regions sized by radius and colored with a continuous confidence gradient (green → yellow → red).
-   - Annotates face shape classification with underlying proportional ratios.
-   - Includes **Rejection Diagnostic Overlay** explaining why an image failed quality checks.
-
-4. **Realistic Confidence Scoring**:
-   - Multi-archetype distance metric with decision boundary margin penalties for face shape.
-   - Peak signal-to-noise ratio (SNR) confidence scoring for detected spot regions.
-   - Independent quality gate sub-scores (sharpness, lighting, pose).
-
-5. **Robustness & Edge Cases**:
-   - Large image downscaling (`> 2048px`) to protect inference speed while maintaining normalized coordinates.
-   - Gentle degradation for minor head angles.
-   - Structured logging with execution time telemetry and `DEBUG` flag support.
-
-6. **Redesigned Modern UI & Printable PDF Report**:
-   - Pink & neutral aesthetic (`#FF659D`, `#FFE6F0`, `#1E293B`).
-   - Summary score cards, skin meters, proportional geometry table, overlay toggle, and **Export PDF Report** export.
+The system produces measurable metrics, confidence scores, visual
+overlays, and plain-language observations. It reports what is visibly
+present in an image — it does **not** diagnose medical conditions.
 
 ---
 
-## Directory Structure
+## 📌 Overview
+
+| | |
+|---|---|
+| 🚀 **Current version** | `v0.3.0` — Recommendation Engine + LLM Explanations |
+| 🛠️ **Stack** | Python, FastAPI, MediaPipe, OpenCV |
+| ✅ **Status** | Active development — core pipeline stable, mobile client not yet built |
+
+---
+
+## ✨ What's New in v0.3.0
+
+Building on the hardened, calibrated pipeline from v0.2.0, this release
+adds the layer that turns raw scores into readable, safe explanations.
+
+- 🧩 **Deterministic recommendation rules engine** — a pure, unit-tested
+  module that maps calibrated CV scores to a fixed catalog of
+  recommendation IDs. No ML, no LLM, no ambiguity: same input always
+  produces the same output.
+- 💬 **LLM explanation layer** — takes only the recommendation IDs
+  already decided by the rules engine and turns them into calm,
+  factual, non-alarming prose. The LLM never sees raw scores
+  unsupervised and never invents a new observation.
+- 🛡️ **Schema-validated LLM output** with automatic fallback to canned
+  template text if the API call fails, times out, or returns malformed
+  output — the report is never dependent on a third-party call
+  succeeding.
+- 🚫 **Medical-language safety net** — a keyword filter runs on
+  generated text as a backstop to the prompt-level constraints.
+- ⚡ **Response caching** by recommendation-ID combination to avoid
+  redundant LLM calls across scans that trigger the same rule set.
+- 📄 **Extended report section** in the API response with per-
+  observation explanations, a summary, and a standing disclaimer.
+
+See [Changelog](#-changelog) for the full version history.
+
+---
+
+## ⚙️ How It Works
+
+```text
+📸 Selfie
+   ↓
+🔍 Image Quality Gate        (reject blurry / dark / no-face / multi-face input)
+   ↓
+🧑‍💻 Face Detection & Landmarks (MediaPipe, 478 points)
+   ↓
+📐 Geometry & Shape Analysis  (relative ratios, symmetry, shape heuristic)
+   ↓
+🩹 Skin Analysis              (redness, pigmentation, texture, spots, under-eye — skin-masked)
+   ↓
+📊 Structured Metrics JSON
+   ↓
+🧩 Recommendation Rules Engine (deterministic — decides WHAT to report)
+   ↓
+💬 LLM Explanation Layer       (explains what was already decided — never invents)
+   ↓
+📄 Final Report
+```
+
+**Core design rule:** CV models detect. The rules engine decides what's
+reportable. The LLM only explains. This separation is intentional and
+should not be bypassed — see [Design Principles](#-design-principles).
+
+---
+
+## 🌟 Features
+
+- 📐 **Face geometry** — proportional ratios, symmetry score, heuristic
+  face shape classification with confidence.
+- 🩹 **Skin analysis** — redness, pigmentation variation, texture,
+  spot-like region detection, under-eye darkness — all computed on a
+  landmark-derived skin mask that excludes eyes, brows, lips, and
+  nostrils.
+- 🚦 **Quality gate** that rejects unreliable input (blur, poor
+  lighting, extreme angle, no face, multiple faces) with a specific
+  reason.
+- 🖼️ **Visual debug overlay** — skin mask boundary, flagged regions
+  with a confidence gradient, and shape classification labels.
+- 🧩 **Deterministic recommendation engine** with a fixed, auditable
+  recommendation catalog.
+- 💬 **LLM-generated explanations** — non-medical, non-alarming, with
+  automatic fallback and a safety-net content filter.
+- 🧪 **Automated test harness** with relative-ordering invariants (e.g.
+  a visibly redder test image must score higher than a fairer one).
+- 🖥️ **Web UI** with score cards, skin meters, a geometry table, an
+  overlay toggle, and a printable/exportable PDF report.
+
+---
+
+## 🧭 Design Principles
+
+1. 🔬 CV models detect; they do not diagnose.
+2. 🧩 The rules engine decides what recommendations are allowed — never
+   the LLM.
+3. 💬 The LLM explains approved results; it never invents observations.
+4. 📏 Facial measurements are relative/normalized — no exact real-world
+   dimensions are claimed without calibrated depth.
+5. 🚫 Poor-quality selfies are rejected rather than analyzed
+   unreliably.
+6. 🏷️ Every response carries a `pipeline_version` for reproducibility.
+7. ⚕️ No medical or diagnostic language appears anywhere in the output.
+
+---
+
+## 📁 Project Structure
 
 ```text
 ai-face-analyzer/
 ├── app/
-│   ├── __init__.py
-│   ├── main.py                 # FastAPI service with structured logging & timing
-│   ├── schemas.py               # Pydantic schemas (Section 5 & 6)
-│   ├── config.py                # Centralized thresholds & constants
-│   └── pipeline/
-│       ├── __init__.py
-│       ├── face_detect.py       # MediaPipe Face Landmarker (478 3D landmarks)
-│       ├── quality.py           # Image quality gate
-│       ├── geometry.py          # Proportions, symmetry & margin-aware shape classifier
-│       ├── skin.py              # Clean skin mask + OpenCV heuristics (redness, pigmentation, texture, spots)
-│       ├── regions.py           # Normalized region representations
-│       └── overlay.py           # Visual debug overlay & rejection diagnostic renderer
-├── models/                      # Auto-downloaded face_landmarker.task model
+│   ├── main.py                  # FastAPI service, structured logging & timing
+│   ├── schemas.py                # Pydantic request/response models
+│   ├── config.py                 # Centralized thresholds & constants
+│   ├── pipeline/
+│   │   ├── quality.py            # Image quality gate
+│   │   ├── face_detect.py        # MediaPipe Face Landmarker
+│   │   ├── geometry.py           # Ratios, symmetry, shape classifier
+│   │   ├── skin.py               # Skin mask + redness/pigmentation/texture/spots
+│   │   ├── regions.py            # Normalized region output
+│   │   └── overlay.py            # Debug overlay & rejection diagnostics
+│   ├── rules/
+│   │   ├── engine.py             # Deterministic recommendation engine
+│   │   ├── recommendations.py    # Fixed recommendation catalog
+│   │   └── thresholds.py         # Score bands that trigger each recommendation
+│   └── llm/
+│       ├── client.py             # LLM API wrapper
+│       ├── prompt.py             # Prompt construction
+│       └── schema.py             # Validated LLM output shape
+├── models/                       # MediaPipe face_landmarker.task
 ├── tests/
-│   ├── sample_images/           # Categorized test fixtures
-│   │   ├── good_lighting/
-│   │   ├── low_light/
-│   │   ├── blurry/
-│   │   ├── multiple_faces/
-│   │   ├── no_face/
-│   │   ├── extreme_angle/
-│   │   └── varied_skin_tones/
-│   ├── expected/
-│   │   └── notes.md             # Qualitative expectations & invariants
-│   └── test_pipeline.py         # Automated test harness
+│   ├── sample_images/            # Categorized test fixtures
+│   ├── expected/notes.md         # Qualitative expectations & invariants
+│   └── test_pipeline.py
 ├── static/
-│   └── index.html               # Redesigned UI client with PDF Report export
+│   └── index.html                # Web UI + PDF report export
 ├── requirements.txt
 ├── .env.example
 └── README.md
@@ -75,64 +153,140 @@ ai-face-analyzer/
 
 ---
 
-## Setup & Running
+## 🚀 Getting Started
 
-### 1. Activate Virtual Environment & Install Dependencies
+### Prerequisites
 
-```powershell
-# Windows
-cd "C:\Users\Souvik\OneDrive\Desktop\AI face"
-.\venv\Scripts\Activate.ps1
+- 🐍 Python 3.11+
+- 🔑 An LLM API key (set in `.env`, see `.env.example`)
+
+### Install
+
+```bash
+git clone https://github.com/Souvikkundu0901/ai-face-analyzer.git
+cd ai-face-analyzer
+python -m venv venv
+source venv/bin/activate      # Windows: venv\Scripts\Activate.ps1
 pip install -r requirements.txt
+cp .env.example .env          # then add your LLM API key
 ```
 
-### 2. Start the Server
+### Run
 
-```powershell
+```bash
 uvicorn app.main:app --reload --port 8000
 ```
 
-### 3. Open the UI & Generate Reports
-Visit **`http://localhost:8000`** in your browser:
-- Upload or snap a selfie.
-- View facial geometry metrics, symmetry, and skin meters.
-- Click **Export PDF Report** to generate/print a clean clinical analysis sheet.
+Open `http://localhost:8000` 🌐 to use the web UI, or call the API
+directly:
 
----
+```bash
+curl -X POST http://localhost:8000/api/analyze \
+  -F "image=@path/to/selfie.jpg"
+```
 
-## Running the Automated Test Harness
+### Run Tests
 
-Run all subfolder and invariant tests:
-
-```powershell
+```bash
 python -m unittest tests/test_pipeline.py
 ```
 
-### What a Passing Run Looks Like:
+---
 
-```text
-...........
-----------------------------------------------------------------------
-Ran 11 tests in 2.557s
+## 🔌 API
 
-OK
-```
+### `POST /api/analyze`
 
-### How to Add a New Test Image:
-1. Place your JPEG/PNG photo in the appropriate subfolder inside `tests/sample_images/`:
-   - Good quality selfies -> `good_lighting/`
-   - Dark/underexposed photos -> `low_light/`
-   - Motion or out-of-focus blur -> `blurry/`
-   - Non-portrait / blank images -> `no_face/`
-   - Group photos -> `multiple_faces/`
-   - Sideways or extreme tilt -> `extreme_angle/`
-   - Different skin tones -> `varied_skin_tones/`
-2. Run `python -m unittest tests/test_pipeline.py` to ensure the pipeline processes or rejects it as expected.
+Accepts a selfie (`multipart/form-data`, field `image`). Returns a
+structured JSON report (metrics, regions, confidence scores, and
+explained recommendations), or a `422` with a specific quality-gate
+rejection reason.
+
+### `GET /api/analyze/{scan_id}/overlay`
+
+Returns an annotated debug image showing landmarks, skin mask boundary,
+and flagged regions.
+
+### `GET /health`
+
+Liveness check. ❤️
+
+Full request/response schemas are in [`app/schemas.py`](app/schemas.py).
 
 ---
 
-## Known Limitations & Calibration Insights
+## ⚠️ Known Limitations
 
-1. **Ambient Lighting Color Cast**: Warm incandescent or yellow indoor bulbs artificially elevate CIELAB `a*` channel values. Testing with neutral/daylight illumination provides the most consistent baseline.
-2. **Heavy Facial Hair / Bangs**: Thick beards or low forehead bangs obscure outer chin and hairline landmark points, which can slightly compress face ratio estimates.
-3. **Very Dark Skin Tones**: Under-eye luminance contrast is subtler on darker complexions; calibration thresholds in `config.py` can be customized based on regional lighting calibration.
+- 💡 Warm/incandescent lighting can skew redness detection (CIELAB
+  `a*` channel); results are most consistent under neutral or daylight
+  lighting.
+- 🧔 Heavy facial hair or low bangs can compress geometry ratio
+  estimates by obscuring chin/hairline landmarks.
+- 🌓 Under-eye contrast detection is currently less reliable on very
+  dark skin tones — calibration thresholds are adjustable in
+  `config.py`.
+- 🗄️ No persistent scan history yet — each analysis is stateless
+  (planned for a later release).
+
+---
+
+## 🗺️ Roadmap
+
+- [x] 🧠 Core CV pipeline (geometry + skin heuristics)
+- [x] 🧪 Automated test harness & calibration
+- [x] 🧩 Recommendation rules engine + LLM explanation layer
+- [ ] 🗄️ Persistent scan history & longitudinal comparison
+- [ ] 📱 Flutter mobile client
+- [ ] 🔐 Authentication & multi-user support
+- [ ] 🏭 Production hardening & bias evaluation across broader
+      skin-tone and lighting datasets
+
+---
+
+## 📝 Changelog
+
+### v0.3.0
+- 🧩 Added deterministic recommendation rules engine.
+- 💬 Added LLM explanation layer with schema validation and fallback.
+- 🚫 Added medical-language safety-net filter.
+- ⚡ Added recommendation-based response caching.
+
+### v0.2.0
+- 🧪 Automated test harness with relative-ordering invariants.
+- ⚙️ Centralized all thresholds/config into `app/config.py`.
+- 🖼️ Upgraded debug overlay (skin mask boundary, confidence gradient,
+  rejection diagnostics).
+- 🎯 Realistic, non-flat confidence scoring for shape and region
+  detection.
+- 🛡️ Robustness improvements (downscaling, angle tolerance, structured
+  logging).
+- 🎨 Redesigned web UI with printable PDF report export.
+
+### v0.1.0
+- 🌱 Initial pipeline: image quality gate, MediaPipe face detection and
+  landmarks, geometry ratios, face-shape heuristic, skin heuristics
+  (redness, pigmentation, texture, spots, under-eye darkness).
+
+---
+
+## ⚕️ Disclaimer
+
+This project reports visible facial and skin characteristics only. It
+is not a medical device, does not perform diagnosis, and should not be
+used as a substitute for consulting a dermatologist or other qualified
+professional.
+
+## 📄 License
+
+Add your chosen license here (e.g. MIT) and include a `LICENSE` file at
+the repo root.
+
+---
+
+<div align="center">
+
+**🧑‍💻 Directed & Created by [Souvik Kundu](https://github.com/Souvikkundu0901)**
+
+[GitHub](https://github.com/Souvikkundu0901) · [LinkedIn](https://linkedin.com/in/souvikkundu19)
+
+</div>
