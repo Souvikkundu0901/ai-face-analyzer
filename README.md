@@ -1,3 +1,5 @@
+<img width="1920" height="1080" alt="Screenshot 2026-08-24 235140" src="https://github.com/user-attachments/assets/7d5b9a76-6862-4b20-abd9-2f3483859ca4" />
+<img width="1920" height="1080" alt="Screenshot 2026-08-24 235130" src="https://github.com/user-attachments/assets/556bfa12-b59a-4719-9e68-7c08c8dcc340" />
 # 🧠 AI Face Analyzer
 
 A computer vision service that analyzes facial geometry and visible skin
