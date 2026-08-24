@@ -1,7 +1,7 @@
 """
 Pydantic response and error schemas matching the AI Face Analyzer specification.
 """
-from typing import List
+from typing import List, Optional
 from pydantic import BaseModel, Field
 
 
@@ -45,6 +45,18 @@ class RegionSchema(BaseModel):
     confidence: float = Field(..., description="Confidence score for this detected region (0.0 - 1.0)")
 
 
+class ExplanationSchema(BaseModel):
+    id: str = Field(..., description="Recommendation ID being explained")
+    text: str = Field(..., description="Observational explanation text")
+
+
+class ReportSchema(BaseModel):
+    triggered_recommendations: List[str] = Field(..., description="List of triggered recommendation IDs")
+    explanations: List[ExplanationSchema] = Field(..., description="LLM or canned explanations per recommendation")
+    summary: str = Field(..., description="Closing summary paragraph")
+    disclaimer: str = Field(..., description="Standard non-medical disclaimer")
+
+
 class AnalysisResponseSchema(BaseModel):
     scan_id: str = Field(..., description="Unique scan identifier UUID")
     pipeline_version: str = Field(..., description="Pipeline version string")
@@ -53,6 +65,7 @@ class AnalysisResponseSchema(BaseModel):
     skin: SkinAnalysisSchema
     regions: List[RegionSchema] = Field(default_factory=list, description="List of detected regions")
     warnings: List[str] = Field(default_factory=list, description="Soft warnings regarding scan reliability")
+    report: Optional[ReportSchema] = Field(default=None, description="Recommendation report with explanations")
 
 
 class QualityRejectionSchema(BaseModel):

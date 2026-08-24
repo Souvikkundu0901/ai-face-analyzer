@@ -9,3 +9,4 @@ flatbuffers>=2.0
 protobuf>=3.11.0
 attrs>=21.4.0
 mediapipe>=0.10.11
+google-genai>=1.0.0

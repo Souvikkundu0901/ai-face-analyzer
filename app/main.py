@@ -24,6 +24,8 @@ from app.schemas import (
     FaceRatiosSchema,
     SkinAnalysisSchema,
     RegionSchema,
+    ReportSchema,
+    ExplanationSchema,
     QualityRejectionSchema,
 )
 from app.pipeline.face_detect import get_face_landmarks, ensure_model_downloaded
@@ -31,6 +33,9 @@ from app.pipeline.quality import validate_image_quality
 from app.pipeline.geometry import analyze_face_geometry
 from app.pipeline.skin import analyze_skin_characteristics
 from app.pipeline.overlay import render_debug_overlay, render_rejection_debug_overlay
+from app.rules.engine import evaluate as evaluate_rules
+from app.rules.recommendations import REPORT_DISCLAIMER
+from app.llm.client import generate_explanation
 
 # Configure structured logging
 logging.basicConfig(
@@ -241,7 +246,50 @@ async def analyze_face(image: UploadFile = File(..., description="Selfie image f
     skin_results, detected_regions, skin_mask = analyze_skin_characteristics(bgr_img, landmarks)
     logger.debug(f"[{scan_id}] Skin heuristics took {(time.perf_counter() - t_skin)*1000:.1f}ms")
 
-    # 7. Assemble Structured Response
+    # 7. Rules Engine Evaluation (pure, synchronous, deterministic)
+    t_rules = time.perf_counter()
+    rule_scores = {
+        "redness_score": skin_results.get("redness_score", 0.0),
+        "pigmentation_score": skin_results.get("pigmentation_score", 0.0),
+        "texture_score": skin_results.get("texture_score", 0.0),
+        "under_eye_score": skin_results.get("under_eye_score", 0.0),
+        "visible_spots": skin_results.get("visible_spots", 0),
+        "image_quality_score": quality_metrics.get("score", 1.0),
+    }
+    triggered_ids = evaluate_rules(rule_scores)
+    logger.debug(f"[{scan_id}] Rules evaluation took {(time.perf_counter() - t_rules)*1000:.1f}ms → {triggered_ids}")
+
+    # 8. LLM Explanation Generation (async, with fallback to canned text)
+    t_llm = time.perf_counter()
+    try:
+        llm_report = await generate_explanation(
+            triggered_ids=triggered_ids,
+            supporting_scores=rule_scores,
+            face_shape=geometry_results.get("shape", "unknown"),
+        )
+        report_payload = {
+            "triggered_recommendations": triggered_ids,
+            "explanations": [
+                {"id": item.id, "text": item.text}
+                for item in llm_report.explanations
+            ],
+            "summary": llm_report.summary,
+            "disclaimer": REPORT_DISCLAIMER,
+        }
+    except Exception as e:
+        logger.error(f"[{scan_id}] LLM explanation failed entirely: {e}. Using minimal report.")
+        from app.rules.recommendations import get_fallback_text
+        report_payload = {
+            "triggered_recommendations": triggered_ids,
+            "explanations": [
+                {"id": rid, "text": get_fallback_text(rid)} for rid in triggered_ids
+            ],
+            "summary": f"{len(triggered_ids)} observation(s) noted based on visible characteristics.",
+            "disclaimer": REPORT_DISCLAIMER,
+        }
+    logger.debug(f"[{scan_id}] LLM explanation took {(time.perf_counter() - t_llm)*1000:.1f}ms")
+
+    # 9. Assemble Structured Response
     response_payload = {
         "scan_id": scan_id,
         "pipeline_version": PIPELINE_VERSION,
@@ -250,9 +298,10 @@ async def analyze_face(image: UploadFile = File(..., description="Selfie image f
         "skin": skin_results,
         "regions": detected_regions,
         "warnings": warnings,
+        "report": report_payload,
     }
 
-    # 8. Cache data for debug overlay inspection
+    # 10. Cache data for debug overlay inspection
     cache_scan(scan_id, {
         "status": "success",
         "bgr_img": bgr_img,
@@ -264,7 +313,7 @@ async def analyze_face(image: UploadFile = File(..., description="Selfie image f
     })
 
     t_total = (time.perf_counter() - t_start) * 1000.0
-    logger.info(f"[{scan_id}] Analysis completed successfully in {t_total:.1f}ms (Shape: {geometry_results['shape']}, Spots: {skin_results['visible_spots']})")
+    logger.info(f"[{scan_id}] Analysis completed successfully in {t_total:.1f}ms (Shape: {geometry_results['shape']}, Spots: {skin_results['visible_spots']}, Rules: {triggered_ids})")
 
     return response_payload
 

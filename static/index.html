@@ -570,6 +570,93 @@
       font-family: 'JetBrains Mono', monospace;
     }
 
+    /* AI Insights & Recommendations */
+    .insights-section { margin-top: 24px; }
+    .insights-header {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 16px;
+    }
+    .insights-header h2 {
+      font-size: 1.25rem; font-weight: 700; color: var(--text-dark);
+      letter-spacing: -0.01em;
+    }
+    .recommendation-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 14px;
+      padding: 20px 20px 20px 24px;
+      margin-bottom: 12px;
+      border-left: 4px solid var(--primary-pink);
+      box-shadow: 0 4px 20px rgba(255, 101, 157, 0.08);
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .recommendation-card:hover {
+      box-shadow: 0 6px 24px rgba(255, 101, 157, 0.14);
+      transform: translateY(-1px);
+    }
+    .recommendation-card.severity-high { border-left-color: var(--danger); }
+    .recommendation-card.severity-moderate { border-left-color: var(--primary-pink); }
+    .recommendation-card.severity-low { border-left-color: var(--warning); }
+    .recommendation-card.severity-good { border-left-color: var(--success); }
+    .recommendation-card.severity-info { border-left-color: var(--text-subtle); }
+    .rec-card-header {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
+    }
+    .rec-icon { font-size: 1.3rem; }
+    .rec-title {
+      font-size: 0.95rem; font-weight: 700; color: var(--text-dark);
+    }
+    .rec-id-badge {
+      font-size: 0.65rem; font-weight: 600;
+      background: var(--pink-light); color: var(--primary-pink);
+      padding: 2px 8px; border-radius: 999px; margin-left: auto;
+      white-space: nowrap;
+    }
+    .rec-text {
+      font-size: 0.875rem; color: var(--text-muted); line-height: 1.6;
+    }
+    .insights-summary {
+      background: var(--pink-soft);
+      border: 1px solid var(--border-light);
+      border-radius: 14px;
+      padding: 18px 20px;
+      margin-top: 16px;
+    }
+    .insights-summary p {
+      font-size: 0.875rem; color: var(--text-dark);
+      line-height: 1.6; font-weight: 500;
+    }
+    .insights-disclaimer {
+      background: #f8f9fa;
+      border: 1px solid #e9ecef;
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-top: 14px;
+      display: flex; align-items: flex-start; gap: 10px;
+    }
+    .insights-disclaimer .disc-icon {
+      font-size: 1rem; color: var(--text-subtle); flex-shrink: 0; margin-top: 1px;
+    }
+    .insights-disclaimer p {
+      font-size: 0.78rem; color: var(--text-subtle);
+      font-style: italic; line-height: 1.5;
+    }
+    .insights-loading {
+      text-align: center; padding: 32px 0; color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    .insights-loading .spinner-dot {
+      display: inline-block; width: 8px; height: 8px;
+      border-radius: 50%; background: var(--primary-pink);
+      margin: 0 3px; animation: dotPulse 1.2s infinite ease-in-out;
+    }
+    .insights-loading .spinner-dot:nth-child(2) { animation-delay: 0.2s; }
+    .insights-loading .spinner-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes dotPulse {
+      0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); }
+      40% { opacity: 1; transform: scale(1.2); }
+    }
+
     /* Modal / JSON Drawer */
     .collapsible-drawer {
       background: #0f172a;
@@ -902,6 +989,22 @@
           </table>
         </div>
 
+        <!-- AI Insights & Recommendations -->
+        <div class="card hidden" id="insights-section">
+          <div class="insights-header">
+            <span style="font-size: 1.4rem;">✨</span>
+            <h2>AI Insights & Recommendations</h2>
+          </div>
+          <div id="insights-cards"></div>
+          <div class="insights-summary hidden" id="insights-summary">
+            <p id="insights-summary-text"></p>
+          </div>
+          <div class="insights-disclaimer hidden" id="insights-disclaimer">
+            <span class="disc-icon">ℹ️</span>
+            <p id="insights-disclaimer-text"></p>
+          </div>
+        </div>
+
         <!-- Developer JSON Drawer (Collapsible) -->
         <div class="card no-print">
           <div class="card-header" style="margin-bottom: 10px; cursor: pointer;" id="toggle-json-drawer">
@@ -1139,6 +1242,7 @@
           geometryCard.classList.add('hidden');
           qualityCard.classList.add('hidden');
           btnExportPdf.classList.add('hidden');
+          document.getElementById('insights-section').classList.add('hidden');
           
           // Fetch rejection diagnostic overlay if available
           if (data.scan_id) {
@@ -1230,6 +1334,62 @@
       document.getElementById('geo-eye-ratio').textContent = r.eye_distance_to_face_width.toFixed(2);
       document.getElementById('geo-nose-ratio').textContent = r.nose_width_to_face_width.toFixed(2);
       document.getElementById('geo-lip-ratio').textContent = r.lip_width_to_face_width.toFixed(2);
+
+      // AI Insights & Recommendations
+      const insightsSection = document.getElementById('insights-section');
+      const insightsCards = document.getElementById('insights-cards');
+      const insightsSummary = document.getElementById('insights-summary');
+      const insightsSummaryText = document.getElementById('insights-summary-text');
+      const insightsDisclaimer = document.getElementById('insights-disclaimer');
+      const insightsDisclaimerText = document.getElementById('insights-disclaimer-text');
+
+      if (data.report) {
+        insightsSection.classList.remove('hidden');
+        
+        const catalogMeta = {
+          "REDNESS_MODERATE": { icon: "🔴", severity: "moderate", title: "Moderate Redness" },
+          "REDNESS_HIGH": { icon: "🔴", severity: "high", title: "Elevated Redness" },
+          "PIGMENTATION_VARIATION": { icon: "🎨", severity: "moderate", title: "Tone/Pigmentation Variation" },
+          "TEXTURE_ROUGH": { icon: "🧱", severity: "moderate", title: "Texture Roughness" },
+          "UNDER_EYE_DARK": { icon: "👁️", severity: "moderate", title: "Under-Eye Shade Deficit" },
+          "SPOTS_FEW": { icon: "🔍", severity: "low", title: "Surface Spots Detected" },
+          "SPOTS_MANY": { icon: "🔍", severity: "moderate", title: "Multiple Surface Spots Detected" },
+          "IMAGE_QUALITY_LOW": { icon: "📷", severity: "info", title: "Image Quality Alert" },
+          "ALL_CLEAR": { icon: "✅", severity: "good", title: "Optimal Skin Characteristics" }
+        };
+
+        let cardsHtml = '';
+        data.report.explanations.forEach(item => {
+          const meta = catalogMeta[item.id] || { icon: "✨", severity: "info", title: item.id.replace(/_/g, ' ') };
+          cardsHtml += `
+            <div class="recommendation-card severity-${meta.severity}">
+              <div class="rec-card-header">
+                <span class="rec-icon">${meta.icon}</span>
+                <span class="rec-title">${meta.title}</span>
+                <span class="rec-id-badge">${item.id}</span>
+              </div>
+              <div class="rec-text">${item.text}</div>
+            </div>
+          `;
+        });
+        insightsCards.innerHTML = cardsHtml;
+
+        if (data.report.summary) {
+          insightsSummaryText.textContent = data.report.summary;
+          insightsSummary.classList.remove('hidden');
+        } else {
+          insightsSummary.classList.add('hidden');
+        }
+
+        if (data.report.disclaimer) {
+          insightsDisclaimerText.textContent = data.report.disclaimer;
+          insightsDisclaimer.classList.remove('hidden');
+        } else {
+          insightsDisclaimer.classList.add('hidden');
+        }
+      } else {
+        insightsSection.classList.add('hidden');
+      }
     }
 
     function setSkinMeter(id, score, name) {

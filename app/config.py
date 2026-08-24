@@ -14,13 +14,20 @@ MODEL_PATH = MODELS_DIR / "face_landmarker.task"
 MODEL_URL = "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task"
 
 # Version identifier — bump when thresholds or pipeline logic are modified
-PIPELINE_VERSION = "analysis-v0.2.0"
+PIPELINE_VERSION = "analysis-v0.3.0"
 
 # Verbose debug logging flag
 DEBUG_MODE = os.environ.get("DEBUG", "false").lower() in ("true", "1", "yes")
 
 # Max input resolution before internal downscaling for CV efficiency
 MAX_INPUT_DIMENSION = 2048
+
+# ==============================================================================
+# 1b. Gemini LLM Configuration
+# ==============================================================================
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
+GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.0-flash")
+LLM_TIMEOUT_SECONDS = int(os.environ.get("LLM_TIMEOUT_SECONDS", "10"))
 
 
 # ==============================================================================
