@@ -349,11 +349,6 @@ is not a medical device, does not perform diagnosis, and should not be
 used as a substitute for consulting a dermatologist or other qualified
 professional.
 
-## 📄 License
-
-Add your chosen license here (e.g. MIT) and include a `LICENSE` file at
-the repo root.
-
 ---
 
 <div align="center">
