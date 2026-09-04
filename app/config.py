@@ -14,7 +14,7 @@ MODEL_PATH = MODELS_DIR / "face_landmarker.task"
 MODEL_URL = "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task"
 
 # Version identifier — bump when thresholds or pipeline logic are modified
-PIPELINE_VERSION = "analysis-v0.3.0"
+PIPELINE_VERSION = "analysis-v0.4.0"
 
 # Verbose debug logging flag
 DEBUG_MODE = os.environ.get("DEBUG", "false").lower() in ("true", "1", "yes")
@@ -23,7 +23,27 @@ DEBUG_MODE = os.environ.get("DEBUG", "false").lower() in ("true", "1", "yes")
 MAX_INPUT_DIMENSION = 2048
 
 # ==============================================================================
-# 1b. Gemini LLM Configuration
+# 1b. Database & Persistence Configuration
+# ==============================================================================
+raw_db_url = os.environ.get("DATABASE_URL", f"sqlite:///{BASE_DIR / 'face_analyzer.db'}")
+# Fix Render / Heroku postgres:// -> postgresql:// URL scheme
+if raw_db_url.startswith("postgres://"):
+    raw_db_url = raw_db_url.replace("postgres://", "postgresql://", 1)
+DATABASE_URL = raw_db_url
+
+# Image retention opt-in (default: False per Section 6 privacy requirements)
+IMAGE_RETENTION_ENABLED = os.environ.get("IMAGE_RETENTION_ENABLED", "false").lower() in ("true", "1", "yes")
+
+# ==============================================================================
+# 1c. Authentication & JWT Configuration
+# ==============================================================================
+JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY", "dev-insecure-secret-key-ai-face-analyzer-phase4")
+JWT_ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ.get("ACCESS_TOKEN_EXPIRE_MINUTES", "60"))
+REFRESH_TOKEN_EXPIRE_DAYS = int(os.environ.get("REFRESH_TOKEN_EXPIRE_DAYS", "7"))
+
+# ==============================================================================
+# 1d. Gemini LLM Configuration
 # ==============================================================================
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.0-flash")

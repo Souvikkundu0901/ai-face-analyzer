@@ -687,6 +687,297 @@
       display: none !important;
     }
 
+    /* Phase 4 Navigation Tabs */
+    .view-nav-tabs {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      border-bottom: 2px solid var(--border-light);
+      padding-bottom: 4px;
+    }
+    .view-nav-tab {
+      background: none;
+      border: none;
+      font-family: inherit;
+      font-size: 0.925rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      padding: 10px 18px;
+      cursor: pointer;
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+    .view-nav-tab:hover {
+      color: var(--primary-pink);
+    }
+    .view-nav-tab.active {
+      color: var(--primary-pink);
+      border-bottom: 3px solid var(--primary-pink);
+      margin-bottom: -6px;
+    }
+    .badge-count {
+      background: var(--pink-light);
+      color: var(--primary-pink);
+      font-size: 0.7rem;
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-weight: 700;
+    }
+
+    /* Modal Dialogs */
+    .modal-backdrop {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 16px;
+    }
+    .modal-box {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      width: 100%;
+      max-width: 540px;
+      max-height: 90vh;
+      overflow-y: auto;
+      border: 1px solid var(--border-light);
+      animation: modalSlide 0.25s ease-out;
+    }
+    .modal-box.large {
+      max-width: 780px;
+    }
+    @keyframes modalSlide {
+      from { opacity: 0; transform: translateY(12px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-header h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+    .modal-close-btn {
+      background: none;
+      border: none;
+      font-size: 1.25rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      line-height: 1;
+    }
+    .modal-body {
+      padding: 24px;
+    }
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border-light);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      background: var(--pink-subtle);
+      border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    }
+
+    /* Auth Forms */
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text-dark);
+    }
+    .form-input {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-light);
+      font-family: inherit;
+      font-size: 0.875rem;
+      transition: border-color 0.2s;
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary-pink);
+      box-shadow: 0 0 0 3px var(--pink-light);
+    }
+
+    /* Scan History View */
+    .history-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .history-card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: var(--primary-pink);
+    }
+    .history-checkbox {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary-pink);
+      cursor: pointer;
+    }
+    .history-card-body {
+      flex: 1;
+    }
+    .history-meta-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+    .history-date {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+    .history-badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--pink-light);
+      color: var(--primary-pink);
+      text-transform: capitalize;
+    }
+    .history-metrics-row {
+      display: flex;
+      gap: 14px;
+      font-size: 0.775rem;
+      color: var(--text-muted);
+    }
+    .history-metrics-row span strong {
+      color: var(--text-dark);
+    }
+    .history-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Comparison Dashboard */
+    .comparability-warning-banner {
+      background: #fffbeb;
+      border: 2px solid #f59e0b;
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      color: #92400e;
+    }
+    .comparability-warning-banner .warn-icon {
+      font-size: 1.4rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .comparability-warning-banner h4 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: #78350f;
+    }
+    .comparability-warning-banner p {
+      font-size: 0.8125rem;
+      line-height: 1.5;
+    }
+
+    .delta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .delta-card {
+      background: var(--pink-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      text-align: center;
+    }
+    .delta-title {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .delta-val {
+      font-size: 1.25rem;
+      font-weight: 800;
+    }
+    .delta-val.better { color: var(--success); }
+    .delta-val.worse { color: var(--danger); }
+    .delta-val.neutral { color: var(--text-dark); }
+
+    .timeline-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.825rem;
+      margin-top: 14px;
+    }
+    .timeline-table th, .timeline-table td {
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .timeline-table th {
+      background: var(--pink-subtle);
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    /* Danger Zone / Delete Controls */
+    .btn-danger {
+      background: var(--danger);
+      color: #ffffff;
+      border: none;
+    }
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+    .btn-outline-danger {
+      background: transparent;
+      border: 1px solid var(--danger);
+      color: var(--danger);
+    }
+    .btn-outline-danger:hover {
+      background: #fef2f2;
+    }
+    .danger-zone-card {
+      background: #fff5f5;
+      border: 1px solid #fecaca;
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      margin-top: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
     /* Printable Report Sheet Styling */
     @media print {
       body {
@@ -735,12 +1026,22 @@
       </div>
       <div class="header-actions">
         <div class="status-pill">
-          <span class="status-dot"></span> Pipeline v0.2.0 Active
+          <span class="status-dot"></span> Pipeline v0.4.0 Active
         </div>
         <button class="btn btn-outline-pink hidden" id="btn-export-pdf" style="padding: 7px 14px; font-size: 0.8125rem;">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
           Export PDF Report
         </button>
+
+        <!-- Auth Controls -->
+        <button class="btn btn-primary" id="btn-open-auth-modal" style="padding: 7px 16px; font-size: 0.8125rem;">
+          Sign In
+        </button>
+        <div id="user-profile-badge" class="hidden" style="display: flex; align-items: center; gap: 8px;">
+          <span id="user-email-display" style="font-size: 0.8125rem; font-weight: 600; color: var(--text-dark); background: var(--pink-light); padding: 5px 12px; border-radius: 999px;"></span>
+          <button class="btn btn-outline-pink" id="btn-open-account-modal" style="padding: 5px 12px; font-size: 0.775rem;">Account</button>
+          <button class="btn btn-secondary" id="btn-sign-out" style="padding: 5px 12px; font-size: 0.775rem;">Sign Out</button>
+        </div>
       </div>
     </header>
 
@@ -750,7 +1051,19 @@
       <span id="alert-msg"></span>
     </div>
 
-    <!-- Dashboard Content -->
+    <!-- View Navigation Tabs -->
+    <div class="view-nav-tabs no-print">
+      <button class="view-nav-tab active" id="tab-nav-scanner">
+        <span>📷</span> Real-Time Scanner
+      </button>
+      <button class="view-nav-tab" id="tab-nav-history">
+        <span>📜</span> Scan History & Longitudinal Trends
+        <span class="badge-count hidden" id="history-count-badge">0</span>
+      </button>
+    </div>
+
+    <!-- View 1: Real-Time Scanner & Analysis Dashboard -->
+    <div id="view-scanner">
     <div class="dashboard-grid">
       
       <!-- Left Column: Image Input & Visual Preview -->
@@ -1018,6 +1331,228 @@
 
       </div>
     </div>
+    </div> <!-- end view-scanner -->
+
+    <!-- View 2: Scan History & Longitudinal Trends -->
+    <div id="view-history" class="hidden no-print">
+      <div class="card" style="margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+          <div>
+            <h2 style="font-size: 1.25rem; font-weight: 800; color: var(--text-dark);">Scan History</h2>
+            <p style="font-size: 0.8125rem; color: var(--text-muted);">
+              Track skin characteristics over time with longitudinal delta comparisons.
+            </p>
+          </div>
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <button class="btn btn-secondary btn-sm" id="btn-refresh-history">
+              ↻ Refresh
+            </button>
+            <button class="btn btn-primary btn-sm" id="btn-compare-selected" disabled>
+              Compare Selected (<span id="compare-selected-count">0</span>)
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Logged Out Prompt -->
+      <div id="history-logged-out-prompt" class="card text-center" style="padding: 48px 24px; text-align: center;">
+        <span style="font-size: 2.5rem; display: block; margin-bottom: 12px;">🔒</span>
+        <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 8px;">Sign in to view your scan history</h3>
+        <p style="font-size: 0.875rem; color: var(--text-muted); max-width: 440px; margin: 0 auto 20px auto;">
+          Sign in or register to securely persist analysis outputs and access comparative delta tracking.
+        </p>
+        <button class="btn btn-primary" id="btn-login-from-history" style="padding: 10px 24px;">Sign In or Register</button>
+      </div>
+
+      <!-- Logged In Container -->
+      <div id="history-logged-in-container" class="hidden">
+        <div id="history-empty-state" class="card text-center hidden" style="padding: 40px; text-align: center;">
+          <p style="color: var(--text-muted); font-size: 0.9rem;">No scans recorded yet. Capture a selfie in the Scanner view to create your first scan!</p>
+        </div>
+        <div id="history-list-items"></div>
+        <div id="history-pagination" class="card hidden" style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
+          <button class="btn btn-secondary btn-sm" id="btn-hist-prev" disabled>← Previous</button>
+          <span id="hist-page-info" style="font-size: 0.8125rem; color: var(--text-muted); font-weight: 600;">Page 1</span>
+          <button class="btn btn-secondary btn-sm" id="btn-hist-next" disabled>Next →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modals -->
+
+    <!-- 1. Authentication Modal -->
+    <div id="auth-modal" class="modal-backdrop hidden no-print">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h3 id="auth-modal-title">Sign In to Your Account</h3>
+          <button class="modal-close-btn" id="btn-close-auth-modal">✕</button>
+        </div>
+        <div class="modal-body">
+          <div style="display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid var(--border-light); padding-bottom: 8px;">
+            <button class="btn btn-sm btn-primary" id="btn-tab-auth-login" style="flex: 1;">Sign In</button>
+            <button class="btn btn-sm btn-secondary" id="btn-tab-auth-register" style="flex: 1;">Register</button>
+          </div>
+          <div id="auth-error-banner" class="alert-banner danger hidden" style="margin-bottom: 16px;">
+            <span id="auth-error-msg"></span>
+          </div>
+          <form id="auth-form">
+            <div class="form-group">
+              <label for="auth-email">Email Address</label>
+              <input type="email" id="auth-email" class="form-input" placeholder="user@example.com" required />
+            </div>
+            <div class="form-group">
+              <label for="auth-password">Password</label>
+              <input type="password" id="auth-password" class="form-input" placeholder="••••••••" minlength="6" required />
+            </div>
+            <button type="submit" class="btn btn-primary" id="btn-auth-submit" style="width: 100%; margin-top: 10px; padding: 12px;">
+              <span id="auth-btn-text">Sign In</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Longitudinal Comparison Modal -->
+    <div id="comparison-modal" class="modal-backdrop hidden no-print">
+      <div class="modal-box large">
+        <div class="modal-header">
+          <div>
+            <h3>Longitudinal Scan Comparison</h3>
+            <p style="font-size: 0.775rem; color: var(--text-muted);" id="comparison-meta-subtitle"></p>
+          </div>
+          <button class="modal-close-btn" id="btn-close-comparison-modal">✕</button>
+        </div>
+        <div class="modal-body">
+          <!-- Prominent Comparability Warning -->
+          <div id="comparison-warning-banner" class="comparability-warning-banner hidden">
+            <span class="warn-icon">⚠️</span>
+            <div>
+              <h4>Comparability Warning</h4>
+              <p id="comparison-warning-text"></p>
+            </div>
+          </div>
+
+          <!-- Stability Badge -->
+          <div style="margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 0.8125rem; font-weight: 600; color: var(--text-dark);">Face Shape Stability:</span>
+            <span id="comparison-shape-badge" class="history-badge">Checking...</span>
+          </div>
+
+          <!-- Net Deltas Grid -->
+          <div class="delta-grid" id="comparison-deltas-grid"></div>
+
+          <!-- Chronological Progression Table -->
+          <h4 style="font-size: 0.9rem; font-weight: 700; color: var(--text-dark); margin-top: 20px;">Chronological Timeline</h4>
+          <div style="overflow-x: auto;">
+            <table class="timeline-table" id="comparison-timeline-table">
+              <thead>
+                <tr>
+                  <th>Date & Time</th>
+                  <th>Quality</th>
+                  <th>Shape</th>
+                  <th>Redness</th>
+                  <th>Spots</th>
+                  <th>Texture</th>
+                  <th>Under-Eye</th>
+                </tr>
+              </thead>
+              <tbody id="comparison-timeline-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary btn-sm" id="btn-close-comparison-modal-foot">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Account & Privacy Settings Modal -->
+    <div id="account-modal" class="modal-backdrop hidden no-print">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h3>Account & Privacy Controls</h3>
+          <button class="modal-close-btn" id="btn-close-account-modal">✕</button>
+        </div>
+        <div class="modal-body">
+          <div style="margin-bottom: 20px;">
+            <div style="font-size: 0.8125rem; color: var(--text-muted); margin-bottom: 4px;">Logged in as:</div>
+            <div id="account-email-full" style="font-size: 1rem; font-weight: 700; color: var(--text-dark);"></div>
+            <div id="account-created-date" style="font-size: 0.775rem; color: var(--text-muted); margin-top: 2px;"></div>
+          </div>
+
+          <!-- Privacy Highlights -->
+          <div class="card" style="background: #f8fafc; border: 1px solid #e2e8f0; margin-bottom: 24px; padding: 16px;">
+            <h4 style="font-size: 0.85rem; font-weight: 700; color: var(--text-dark); margin-bottom: 6px;">
+              🛡️ Privacy & Retention Guarantee
+            </h4>
+            <p style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 6px;">
+              • <strong>Zero Image Storage</strong>: By default, original photo selfies are processed in-memory and never stored on disk or database.
+            </p>
+            <p style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 6px;">
+              • <strong>No Facial Embeddings</strong>: Only relative geometric ratios and skin metric scores are persisted.
+            </p>
+            <p style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.5;">
+              • <strong>Real Deletes</strong>: Deleting a scan or your account physically removes all rows from the database.
+            </p>
+          </div>
+
+          <!-- Danger Zone: Account Deletion -->
+          <div class="danger-zone-card">
+            <div>
+              <div style="font-size: 0.85rem; font-weight: 700; color: var(--danger);">Delete Account & All Data</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">Permanently wipe your account and all scan history.</div>
+            </div>
+            <button class="btn btn-outline-danger btn-sm" id="btn-start-delete-account">Delete Account</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Two-Step Account Deletion Confirmation Modal -->
+    <div id="delete-account-modal" class="modal-backdrop hidden no-print">
+      <div class="modal-box">
+        <div class="modal-header" style="border-bottom-color: #fee2e2;">
+          <h3 style="color: var(--danger);">⚠️ Confirm Account Deletion (Step 2 of 2)</h3>
+          <button class="modal-close-btn" id="btn-close-delete-account-modal">✕</button>
+        </div>
+        <div class="modal-body">
+          <p style="font-size: 0.875rem; color: var(--text-dark); margin-bottom: 14px; line-height: 1.5;">
+            This action is <strong>irreversible</strong>. All your scans, analysis records, and login sessions will be physically purged immediately.
+          </p>
+          <div class="form-group" style="margin-bottom: 18px;">
+            <label for="input-confirm-delete-email" style="font-size: 0.8125rem;">
+              To confirm deletion, please type your email (<strong id="target-delete-email-display" style="color:var(--text-dark);"></strong>) below:
+            </label>
+            <input type="text" id="input-confirm-delete-email" class="form-input" placeholder="Enter your email to confirm" autocomplete="off" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary btn-sm" id="btn-cancel-delete-account">Cancel</button>
+          <button class="btn btn-danger btn-sm" id="btn-confirm-delete-account" disabled>
+            Permanently Delete My Account
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Single Scan Deletion Confirmation Modal -->
+    <div id="delete-scan-modal" class="modal-backdrop hidden no-print">
+      <div class="modal-box" style="max-width: 440px;">
+        <div class="modal-header">
+          <h3>Delete Scan</h3>
+          <button class="modal-close-btn" id="btn-close-delete-scan-modal">✕</button>
+        </div>
+        <div class="modal-body">
+          <p style="font-size: 0.875rem; color: var(--text-dark); line-height: 1.5;">
+            Are you sure you want to permanently delete this scan? This will physically remove the record from the database.
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary btn-sm" id="btn-cancel-delete-scan">Cancel</button>
+          <button class="btn btn-danger btn-sm" id="btn-confirm-delete-scan">Delete</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -1214,9 +1749,14 @@
       const formData = new FormData();
       formData.append('image', selectedFile);
 
+      const token = getAuthToken();
+      const endpoint = token ? '/api/scans' : '/api/analyze';
+      const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+
       try {
-        const res = await fetch('/api/analyze', {
+        const res = await fetch(endpoint, {
           method: 'POST',
+          headers: headers,
           body: formData
         });
 
@@ -1234,6 +1774,12 @@
         rawJson.textContent = JSON.stringify(data, null, 2);
 
         if (!res.ok) {
+          if (res.status === 401) {
+            clearAuthTokens();
+            updateAuthUI();
+            showAlert('Session expired. Please sign in again.');
+            return;
+          }
           showAlert(`Quality Gate Rejection [${data.reason || 'failed'}]: ${data.message || 'Image rejected.'}`);
           emptyState.classList.remove('hidden');
           resultsHero.classList.add('hidden');
@@ -1255,6 +1801,11 @@
         emptyState.classList.add('hidden');
         renderFullDashboard(data);
         btnExportPdf.classList.remove('hidden');
+
+        // Refresh scan history badge and list if logged in
+        if (token && currentUser) {
+          loadScanHistory(0);
+        }
 
         // Fetch debug overlay
         tryFetchOverlay(data.scan_id);
@@ -1423,6 +1974,608 @@
     function hideAlert() {
       alertBanner.style.display = 'none';
     }
+
+    // =========================================================================
+    // Phase 4: Authentication, Scan History & Longitudinal Comparison Logic
+    // =========================================================================
+    let currentUser = null;
+    let authMode = 'login'; // 'login' or 'register'
+    let currentHistoryOffset = 0;
+    const historyLimit = 10;
+    let selectedScanIdsForCompare = new Set();
+    let pendingDeleteScanId = null;
+
+    function getAuthToken() {
+      return localStorage.getItem('face_analyzer_access_token');
+    }
+
+    function getRefreshToken() {
+      return localStorage.getItem('face_analyzer_refresh_token');
+    }
+
+    function setAuthTokens(access, refresh) {
+      localStorage.setItem('face_analyzer_access_token', access);
+      localStorage.setItem('face_analyzer_refresh_token', refresh);
+    }
+
+    function clearAuthTokens() {
+      localStorage.removeItem('face_analyzer_access_token');
+      localStorage.removeItem('face_analyzer_refresh_token');
+      currentUser = null;
+    }
+
+    // Modal Elements
+    const authModal = document.getElementById('auth-modal');
+    const comparisonModal = document.getElementById('comparison-modal');
+    const accountModal = document.getElementById('account-modal');
+    const deleteAccountModal = document.getElementById('delete-account-modal');
+    const deleteScanModal = document.getElementById('delete-scan-modal');
+
+    // Navigation Tabs
+    const tabNavScanner = document.getElementById('tab-nav-scanner');
+    const tabNavHistory = document.getElementById('tab-nav-history');
+    const viewScanner = document.getElementById('view-scanner');
+    const viewHistory = document.getElementById('view-history');
+
+    tabNavScanner.addEventListener('click', () => {
+      tabNavScanner.classList.add('active');
+      tabNavHistory.classList.remove('active');
+      viewScanner.classList.remove('hidden');
+      viewHistory.classList.add('hidden');
+    });
+
+    tabNavHistory.addEventListener('click', () => {
+      tabNavHistory.classList.add('active');
+      tabNavScanner.classList.remove('active');
+      viewHistory.classList.remove('hidden');
+      viewScanner.classList.add('hidden');
+      if (currentUser) {
+        loadScanHistory(currentHistoryOffset);
+      }
+    });
+
+    // Auth UI Updates
+    async function checkAuthSession() {
+      const token = getAuthToken();
+      if (!token) {
+        updateAuthUI();
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/auth/me', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+          currentUser = await res.json();
+          updateAuthUI();
+          loadScanHistory(0);
+        } else if (res.status === 401) {
+          const refreshed = await attemptTokenRefresh();
+          if (refreshed) {
+            checkAuthSession();
+          } else {
+            clearAuthTokens();
+            updateAuthUI();
+          }
+        }
+      } catch (e) {
+        console.warn('Auth check error:', e);
+      }
+    }
+
+    async function attemptTokenRefresh() {
+      const rf = getRefreshToken();
+      if (!rf) return false;
+      try {
+        const res = await fetch('/api/auth/refresh', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ refresh_token: rf })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setAuthTokens(data.access_token, data.refresh_token);
+          return true;
+        }
+      } catch (e) {
+        console.error('Refresh token failed:', e);
+      }
+      return false;
+    }
+
+    function updateAuthUI() {
+      const btnOpenAuth = document.getElementById('btn-open-auth-modal');
+      const userProfileBadge = document.getElementById('user-profile-badge');
+      const userEmailDisplay = document.getElementById('user-email-display');
+      const historyLoggedOut = document.getElementById('history-logged-out-prompt');
+      const historyLoggedIn = document.getElementById('history-logged-in-container');
+
+      if (currentUser) {
+        btnOpenAuth.classList.add('hidden');
+        userProfileBadge.classList.remove('hidden');
+        userEmailDisplay.textContent = currentUser.email;
+        historyLoggedOut.classList.add('hidden');
+        historyLoggedIn.classList.remove('hidden');
+      } else {
+        btnOpenAuth.classList.remove('hidden');
+        userProfileBadge.classList.add('hidden');
+        userEmailDisplay.textContent = '';
+        historyLoggedOut.classList.remove('hidden');
+        historyLoggedIn.classList.add('hidden');
+        document.getElementById('history-count-badge').classList.add('hidden');
+      }
+    }
+
+    // Auth Modal Handlers
+    document.getElementById('btn-open-auth-modal').addEventListener('click', () => openAuthModal('login'));
+    document.getElementById('btn-login-from-history').addEventListener('click', () => openAuthModal('login'));
+    document.getElementById('btn-close-auth-modal').addEventListener('click', () => authModal.classList.add('hidden'));
+
+    const btnTabLogin = document.getElementById('btn-tab-auth-login');
+    const btnTabRegister = document.getElementById('btn-tab-auth-register');
+    const authModalTitle = document.getElementById('auth-modal-title');
+    const authBtnText = document.getElementById('auth-btn-text');
+    const authErrorBanner = document.getElementById('auth-error-banner');
+    const authErrorMsg = document.getElementById('auth-error-msg');
+
+    btnTabLogin.addEventListener('click', () => switchAuthMode('login'));
+    btnTabRegister.addEventListener('click', () => switchAuthMode('register'));
+
+    function openAuthModal(mode) {
+      authErrorBanner.classList.add('hidden');
+      switchAuthMode(mode);
+      authModal.classList.remove('hidden');
+    }
+
+    function switchAuthMode(mode) {
+      authMode = mode;
+      if (mode === 'login') {
+        btnTabLogin.className = 'btn btn-sm btn-primary';
+        btnTabRegister.className = 'btn btn-sm btn-secondary';
+        authModalTitle.textContent = 'Sign In to Your Account';
+        authBtnText.textContent = 'Sign In';
+      } else {
+        btnTabRegister.className = 'btn btn-sm btn-primary';
+        btnTabLogin.className = 'btn btn-sm btn-secondary';
+        authModalTitle.textContent = 'Create a New Account';
+        authBtnText.textContent = 'Register Account';
+      }
+    }
+
+    document.getElementById('auth-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('auth-email').value.trim();
+      const password = document.getElementById('auth-password').value;
+      const submitBtn = document.getElementById('btn-auth-submit');
+
+      authErrorBanner.classList.add('hidden');
+      submitBtn.disabled = true;
+      authBtnText.textContent = 'Processing...';
+
+      const endpoint = authMode === 'login' ? '/api/auth/login' : '/api/auth/register';
+
+      try {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          authErrorMsg.textContent = data.detail || 'Authentication failed.';
+          authErrorBanner.classList.remove('hidden');
+          return;
+        }
+
+        setAuthTokens(data.access_token, data.refresh_token);
+        authModal.classList.add('hidden');
+        document.getElementById('auth-form').reset();
+        await checkAuthSession();
+      } catch (err) {
+        authErrorMsg.textContent = 'Network or server error: ' + err.message;
+        authErrorBanner.classList.remove('hidden');
+      } finally {
+        submitBtn.disabled = false;
+        authBtnText.textContent = authMode === 'login' ? 'Sign In' : 'Register Account';
+      }
+    });
+
+    document.getElementById('btn-sign-out').addEventListener('click', () => {
+      clearAuthTokens();
+      updateAuthUI();
+      selectedScanIdsForCompare.clear();
+      updateCompareButtonState();
+    });
+
+    // Account & Privacy Modal
+    document.getElementById('btn-open-account-modal').addEventListener('click', () => {
+      if (!currentUser) return;
+      document.getElementById('account-email-full').textContent = currentUser.email;
+      const createdDate = new Date(currentUser.created_at).toLocaleDateString('en-US', {
+        year: 'numeric', month: 'long', day: 'numeric'
+      });
+      document.getElementById('account-created-date').textContent = `Member since: ${createdDate}`;
+      accountModal.classList.remove('hidden');
+    });
+    document.getElementById('btn-close-account-modal').addEventListener('click', () => {
+      accountModal.classList.add('hidden');
+    });
+
+    // Two-Step Account Deletion
+    const btnStartDeleteAccount = document.getElementById('btn-start-delete-account');
+    const inputConfirmDeleteEmail = document.getElementById('input-confirm-delete-email');
+    const btnConfirmDeleteAccount = document.getElementById('btn-confirm-delete-account');
+    const targetDeleteEmailDisplay = document.getElementById('target-delete-email-display');
+
+    btnStartDeleteAccount.addEventListener('click', () => {
+      accountModal.classList.add('hidden');
+      inputConfirmDeleteEmail.value = '';
+      btnConfirmDeleteAccount.disabled = true;
+      targetDeleteEmailDisplay.textContent = currentUser.email;
+      deleteAccountModal.classList.remove('hidden');
+    });
+
+    document.getElementById('btn-close-delete-account-modal').addEventListener('click', () => {
+      deleteAccountModal.classList.add('hidden');
+    });
+    document.getElementById('btn-cancel-delete-account').addEventListener('click', () => {
+      deleteAccountModal.classList.add('hidden');
+    });
+
+    inputConfirmDeleteEmail.addEventListener('input', () => {
+      const typed = inputConfirmDeleteEmail.value.trim().toLowerCase();
+      const match = currentUser && typed === currentUser.email.toLowerCase();
+      btnConfirmDeleteAccount.disabled = !match;
+    });
+
+    btnConfirmDeleteAccount.addEventListener('click', async () => {
+      if (!currentUser) return;
+      btnConfirmDeleteAccount.disabled = true;
+      btnConfirmDeleteAccount.textContent = 'Deleting...';
+
+      try {
+        const res = await fetch('/api/users/me', {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+        });
+        if (res.ok) {
+          deleteAccountModal.classList.add('hidden');
+          clearAuthTokens();
+          updateAuthUI();
+          showAlert('Your account and all associated scan data have been permanently erased.');
+        } else {
+          const err = await res.json();
+          alert('Failed to delete account: ' + (err.detail || 'Unknown error'));
+        }
+      } catch (e) {
+        alert('Network error deleting account: ' + e.message);
+      } finally {
+        btnConfirmDeleteAccount.disabled = false;
+        btnConfirmDeleteAccount.textContent = 'Permanently Delete My Account';
+      }
+    });
+
+    // Scan History Loading & Rendering
+    async function loadScanHistory(offset = 0) {
+      if (!currentUser) return;
+      currentHistoryOffset = offset;
+      const token = getAuthToken();
+
+      try {
+        const res = await fetch(`/api/scans?limit=${historyLimit}&offset=${offset}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!res.ok) {
+          if (res.status === 401) {
+            clearAuthTokens();
+            updateAuthUI();
+          }
+          return;
+        }
+
+        const data = await res.json();
+        renderHistoryList(data);
+      } catch (err) {
+        console.error('Error loading scans:', err);
+      }
+    }
+
+    document.getElementById('btn-refresh-history').addEventListener('click', () => {
+      loadScanHistory(currentHistoryOffset);
+    });
+
+    function renderHistoryList(data) {
+      const itemsContainer = document.getElementById('history-list-items');
+      const emptyState = document.getElementById('history-empty-state');
+      const pagination = document.getElementById('history-pagination');
+      const countBadge = document.getElementById('history-count-badge');
+
+      countBadge.textContent = data.total;
+      countBadge.classList.remove('hidden');
+
+      if (!data.items || data.items.length === 0) {
+        emptyState.classList.remove('hidden');
+        itemsContainer.innerHTML = '';
+        pagination.classList.add('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      pagination.classList.remove('hidden');
+
+      let html = '';
+      data.items.forEach(s => {
+        const isChecked = selectedScanIdsForCompare.has(s.id) ? 'checked' : '';
+        const d = new Date(s.created_at);
+        const dateStr = d.toLocaleDateString('en-US', {
+          month: 'short', day: 'numeric', year: 'numeric',
+          hour: 'numeric', minute: '2-digit'
+        });
+
+        const qPct = Math.round(s.overall_quality_score * 100);
+        const redPct = Math.round(s.redness_score * 100);
+        const texPct = Math.round(s.texture_score * 100);
+        const recLabel = s.top_recommendation ? s.top_recommendation.replace(/_/g, ' ') : 'Optimal';
+
+        html += `
+          <div class="history-card">
+            <input type="checkbox" class="history-checkbox" data-scan-id="${s.id}" ${isChecked} title="Select to compare" />
+            <div class="history-card-body">
+              <div class="history-meta-row">
+                <span class="history-date">📅 ${dateStr}</span>
+                <span class="history-badge">Shape: ${s.face_shape}</span>
+                <span class="history-badge" style="background: #ecfdf5; color: #065f46;">Quality: ${qPct}%</span>
+                <span class="history-badge" style="background: var(--pink-soft); color: var(--text-dark);">${recLabel}</span>
+              </div>
+              <div class="history-metrics-row">
+                <span>Spots: <strong>${s.visible_spots}</strong></span>
+                <span>Redness: <strong>${redPct}%</strong></span>
+                <span>Texture: <strong>${texPct}%</strong></span>
+                <span style="color: var(--text-subtle); font-family: monospace; font-size: 0.7rem;">ID: ${s.id.substring(0, 8)}</span>
+              </div>
+            </div>
+            <div class="history-actions">
+              <button class="btn btn-secondary btn-sm btn-view-scan-detail" data-scan-id="${s.id}" style="padding: 6px 12px; font-size: 0.775rem;">
+                View
+              </button>
+              <button class="btn btn-outline-danger btn-sm btn-request-delete-scan" data-scan-id="${s.id}" style="padding: 6px 10px; font-size: 0.775rem;" title="Delete this scan">
+                🗑️
+              </button>
+            </div>
+          </div>
+        `;
+      });
+
+      itemsContainer.innerHTML = html;
+
+      // Bind checkbox toggles
+      itemsContainer.querySelectorAll('.history-checkbox').forEach(cb => {
+        cb.addEventListener('change', (e) => {
+          const id = e.target.getAttribute('data-scan-id');
+          if (e.target.checked) selectedScanIdsForCompare.add(id);
+          else selectedScanIdsForCompare.delete(id);
+          updateCompareButtonState();
+        });
+      });
+
+      // Bind view detail
+      itemsContainer.querySelectorAll('.btn-view-scan-detail').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-scan-id');
+          loadSingleScanDetail(id);
+        });
+      });
+
+      // Bind delete request
+      itemsContainer.querySelectorAll('.btn-request-delete-scan').forEach(btn => {
+        btn.addEventListener('click', () => {
+          pendingDeleteScanId = btn.getAttribute('data-scan-id');
+          deleteScanModal.classList.remove('hidden');
+        });
+      });
+
+      // Pagination controls
+      const btnPrev = document.getElementById('btn-hist-prev');
+      const btnNext = document.getElementById('btn-hist-next');
+      const pageInfo = document.getElementById('hist-page-info');
+
+      const currentPage = Math.floor(data.offset / data.limit) + 1;
+      const totalPages = Math.ceil(data.total / data.limit) || 1;
+      pageInfo.textContent = `Page ${currentPage} of ${totalPages} (${data.total} scans)`;
+
+      btnPrev.disabled = data.offset === 0;
+      btnNext.disabled = (data.offset + data.limit) >= data.total;
+
+      btnPrev.onclick = () => loadScanHistory(Math.max(0, data.offset - data.limit));
+      btnNext.onclick = () => loadScanHistory(data.offset + data.limit);
+    }
+
+    function updateCompareButtonState() {
+      const btnCompare = document.getElementById('btn-compare-selected');
+      const countEl = document.getElementById('compare-selected-count');
+      const count = selectedScanIdsForCompare.size;
+      countEl.textContent = count;
+      btnCompare.disabled = count < 2;
+    }
+
+    // Load Single Scan Detail into Scanner View
+    async function loadSingleScanDetail(scanId) {
+      try {
+        const res = await fetch(`/api/scans/${scanId}`, {
+          headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+        });
+        if (!res.ok) {
+          showAlert('Failed to load scan detail.');
+          return;
+        }
+        const data = await res.json();
+        currentAnalysisData = data;
+        rawJson.textContent = JSON.stringify(data, null, 2);
+
+        // Switch back to scanner view
+        tabNavScanner.click();
+        emptyState.classList.add('hidden');
+        renderFullDashboard(data);
+        btnExportPdf.classList.remove('hidden');
+
+        resultsHero.scrollIntoView({ behavior: 'smooth' });
+      } catch (err) {
+        showAlert('Error loading scan: ' + err.message);
+      }
+    }
+
+    // Single Scan Deletion Handlers
+    document.getElementById('btn-close-delete-scan-modal').addEventListener('click', () => {
+      deleteScanModal.classList.add('hidden');
+      pendingDeleteScanId = null;
+    });
+    document.getElementById('btn-cancel-delete-scan').addEventListener('click', () => {
+      deleteScanModal.classList.add('hidden');
+      pendingDeleteScanId = null;
+    });
+
+    document.getElementById('btn-confirm-delete-scan').addEventListener('click', async () => {
+      if (!pendingDeleteScanId) return;
+      const idToDelete = pendingDeleteScanId;
+      const btn = document.getElementById('btn-confirm-delete-scan');
+      btn.disabled = true;
+
+      try {
+        const res = await fetch(`/api/scans/${idToDelete}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+        });
+        if (res.ok) {
+          deleteScanModal.classList.add('hidden');
+          selectedScanIdsForCompare.delete(idToDelete);
+          updateCompareButtonState();
+          loadScanHistory(currentHistoryOffset);
+        } else {
+          alert('Failed to delete scan.');
+        }
+      } catch (e) {
+        alert('Error: ' + e.message);
+      } finally {
+        btn.disabled = false;
+        pendingDeleteScanId = null;
+      }
+    });
+
+    // Comparison Action
+    document.getElementById('btn-compare-selected').addEventListener('click', async () => {
+      const ids = Array.from(selectedScanIdsForCompare);
+      if (ids.length < 2) return;
+
+      try {
+        const res = await fetch(`/api/scans/compare?ids=${ids.join(',')}`, {
+          headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+        });
+        if (!res.ok) {
+          const err = await res.json();
+          alert('Comparison error: ' + (err.detail || 'Could not complete comparison'));
+          return;
+        }
+        const data = await res.json();
+        renderComparisonModal(data);
+      } catch (e) {
+        alert('Network error during comparison: ' + e.message);
+      }
+    });
+
+    function renderComparisonModal(data) {
+      document.getElementById('comparison-meta-subtitle').textContent =
+        `Comparing ${data.scans_compared.length} scans chronologically (oldest to newest)`;
+
+      // Prominent Comparability Warning
+      const warnBanner = document.getElementById('comparison-warning-banner');
+      const warnText = document.getElementById('comparison-warning-text');
+      if (data.comparability_warning) {
+        warnText.textContent = data.comparability_warning;
+        warnBanner.classList.remove('hidden');
+      } else {
+        warnBanner.classList.add('hidden');
+      }
+
+      // Face Shape Stability Badge
+      const shapeBadge = document.getElementById('comparison-shape-badge');
+      if (data.face_shape_stable) {
+        shapeBadge.textContent = `Consistent (${data.timeline[0].face_shape})`;
+        shapeBadge.style.background = '#ecfdf5';
+        shapeBadge.style.color = '#065f46';
+      } else {
+        shapeBadge.textContent = 'Varied across captures';
+        shapeBadge.style.background = '#fef3c7';
+        shapeBadge.style.color = '#92400e';
+      }
+
+      // Net Deltas Grid
+      const d = data.deltas;
+      const grid = document.getElementById('comparison-deltas-grid');
+
+      function formatDelta(val, invertGood = false, isInt = false) {
+        const numStr = isInt ? (val > 0 ? `+${val}` : `${val}`) : (val > 0 ? `+${val.toFixed(2)}` : `${val.toFixed(2)}`);
+        let cls = 'neutral';
+        if (val !== 0) {
+          const isBetter = invertGood ? val < 0 : val > 0;
+          cls = isBetter ? 'better' : 'worse';
+        }
+        return `<div class="delta-val ${cls}">${numStr}</div>`;
+      }
+
+      grid.innerHTML = `
+        <div class="delta-card">
+          <div class="delta-title">Redness Δ</div>
+          ${formatDelta(d.redness_score, true)}
+        </div>
+        <div class="delta-card">
+          <div class="delta-title">Spots Δ</div>
+          ${formatDelta(d.visible_spots, true, true)}
+        </div>
+        <div class="delta-card">
+          <div class="delta-title">Texture Δ</div>
+          ${formatDelta(d.texture_score, true)}
+        </div>
+        <div class="delta-card">
+          <div class="delta-title">Pigmentation Δ</div>
+          ${formatDelta(d.pigmentation_score, true)}
+        </div>
+        <div class="delta-card">
+          <div class="delta-title">Under-Eye Δ</div>
+          ${formatDelta(d.under_eye_score, true)}
+        </div>
+      `;
+
+      // Progression Table
+      const tbody = document.getElementById('comparison-timeline-tbody');
+      tbody.innerHTML = data.timeline.map(t => {
+        const dt = new Date(t.created_at);
+        const dateStr = dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        return `
+          <tr>
+            <td><strong>${dateStr}</strong></td>
+            <td>${Math.round(t.quality_score * 100)}%</td>
+            <td style="text-transform: capitalize;">${t.face_shape}</td>
+            <td>${Math.round(t.redness_score * 100)}%</td>
+            <td>${t.visible_spots}</td>
+            <td>${Math.round(t.texture_score * 100)}%</td>
+            <td>${Math.round(t.under_eye_score * 100)}%</td>
+          </tr>
+        `;
+      }).join('');
+
+      comparisonModal.classList.remove('hidden');
+    }
+
+    document.getElementById('btn-close-comparison-modal').addEventListener('click', () => {
+      comparisonModal.classList.add('hidden');
+    });
+    document.getElementById('btn-close-comparison-modal-foot').addEventListener('click', () => {
+      comparisonModal.classList.add('hidden');
+    });
+
+    // Check existing auth session on load
+    checkAuthSession();
   </script>
 </body>
 </html>

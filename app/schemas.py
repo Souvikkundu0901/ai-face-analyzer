@@ -72,3 +72,90 @@ class QualityRejectionSchema(BaseModel):
     passed: bool = Field(default=False, description="Always false for rejected scans")
     reason: str = Field(..., description="Short machine-readable failure reason code")
     message: str = Field(..., description="User-facing retake guidance")
+
+
+# ==============================================================================
+# Phase 4 Auth & User Schemas
+# ==============================================================================
+class UserRegisterRequest(BaseModel):
+    email: str = Field(..., description="User email address")
+    password: str = Field(..., min_length=6, description="Plaintext password (minimum 6 characters)")
+
+
+class UserLoginRequest(BaseModel):
+    email: str = Field(..., description="User email address")
+    password: str = Field(..., description="Plaintext password")
+
+
+class RefreshTokenRequest(BaseModel):
+    refresh_token: str = Field(..., description="Valid refresh token")
+
+
+class TokenResponse(BaseModel):
+    access_token: str = Field(..., description="JWT access token")
+    refresh_token: str = Field(..., description="JWT refresh token")
+    token_type: str = Field(default="bearer", description="Token type")
+    expires_in: int = Field(..., description="Access token expiration time in seconds")
+
+
+class UserResponse(BaseModel):
+    id: str = Field(..., description="Unique user UUID")
+    email: str = Field(..., description="User email address")
+    created_at: str = Field(..., description="Registration timestamp")
+
+
+# ==============================================================================
+# Phase 4 Scan Persistence & History Schemas
+# ==============================================================================
+class ScanSummarySchema(BaseModel):
+    id: str = Field(..., description="Scan UUID")
+    created_at: str = Field(..., description="Capture timestamp")
+    pipeline_version: str = Field(..., description="Pipeline version used")
+    overall_quality_score: float = Field(..., description="Overall image quality score (0.0 - 1.0)")
+    face_shape: str = Field(..., description="Classified face shape")
+    top_recommendation: Optional[str] = Field(None, description="Primary triggered recommendation ID")
+    visible_spots: int = Field(..., description="Detected spot count")
+    redness_score: float = Field(..., description="Redness score")
+    texture_score: float = Field(..., description="Texture score")
+
+
+class ScanListResponse(BaseModel):
+    items: List[ScanSummarySchema] = Field(..., description="List of scan summaries")
+    total: int = Field(..., description="Total count of scans for user")
+    limit: int = Field(..., description="Pagination limit")
+    offset: int = Field(..., description="Pagination offset")
+
+
+# ==============================================================================
+# Phase 4 Comparison Schemas
+# ==============================================================================
+class ComparisonDeltaSchema(BaseModel):
+    redness_score: float = Field(..., description="Delta in redness score (newer - older)")
+    pigmentation_score: float = Field(..., description="Delta in pigmentation variation")
+    texture_score: float = Field(..., description="Delta in texture roughness")
+    under_eye_score: float = Field(..., description="Delta in under-eye shade")
+    visible_spots: int = Field(..., description="Delta in visible spot count")
+
+
+class ScanTimelineItem(BaseModel):
+    scan_id: str
+    created_at: str
+    quality_score: float
+    face_shape: str
+    redness_score: float
+    pigmentation_score: float
+    texture_score: float
+    under_eye_score: float
+    visible_spots: int
+
+
+class ScanComparisonResponse(BaseModel):
+    scans_compared: List[str] = Field(..., description="List of scan UUIDs compared in chronological order")
+    comparability_warning: Optional[str] = Field(
+        None,
+        description="Warning surfaced prominently if capture conditions differ significantly"
+    )
+    deltas: ComparisonDeltaSchema = Field(..., description="Net metric changes between oldest and newest scan")
+    face_shape_stable: bool = Field(..., description="Whether face shape remained consistent across scans")
+    timeline: List[ScanTimelineItem] = Field(..., description="Chronological metrics for each compared scan")
+

@@ -15,9 +15,9 @@ present in an image — it does **not** diagnose medical conditions.
 
 | | |
 |---|---|
-| 🚀 **Current version** | `v0.3.0` — Recommendation Engine + LLM Explanations |
-| 🛠️ **Stack** | Python, FastAPI, MediaPipe, OpenCV |
-| ✅ **Status** | Active development — core pipeline stable, mobile client not yet built |
+| 🚀 **Current version** | `v0.4.0` — Persistence, Auth & Longitudinal Comparison |
+| 🛠️ **Stack** | Python, FastAPI, MediaPipe, OpenCV, PostgreSQL / SQLAlchemy |
+| ✅ **Status** | Active development — persistence & comparison complete, mobile client next |
 
 ---
 
@@ -40,6 +40,33 @@ invented independently.
 
 ---
 
+## ✨ What's New in v0.4.0
+ 
+Building on the calibrated pipeline and rules/LLM explanation layers, this release
+adds full user persistence, privacy-first storage, and longitudinal scan comparisons.
+ 
+- 🔐 **Authentication & Session Security** — Email/password signup and login with direct
+  `bcrypt` password hashing, short-lived JWT access tokens, and DB-backed refresh token
+  rotation with automatic reuse detection and immediate revocation.
+- 🗄️ **PostgreSQL Data Model with JSONB** — Efficient relational user schema with flexible
+  `JSONB` columns for structured CV metrics and recommendations. Compatible with SQLite
+  for effortless zero-config local testing.
+- 🛡️ **Strict Zero-Image Retention Privacy** — Original selfies are processed entirely
+  in-memory and immediately discarded. Only anonymized, derived numerical metrics are
+  ever saved to the database.
+- 🗑️ **True Database Deletion** — Real physical `DELETE` cascade across scans, tokens, and
+  user records. Zero soft-delete flags or retained personal data. Account deletion requires
+  a safe two-step confirmation flow including typing the account email.
+- 📈 **Longitudinal Scan Comparison & Delta Engine** — Track changes over time across redness,
+  pigmentation, texture, spots, and symmetry. Includes structural face-shape stability checks.
+- ⚠️ **Capture-Condition Comparability Warnings** — Flags scans where lighting, quality, or
+  pose disparities ($\ge 0.20$ quality gap, $\ge 0.25$ lighting/pose disparity) make direct
+  metric comparison unreliable.
+- 🖥️ **Upgraded Web Interface** — Dedicated Scanner vs. History views, side-by-side comparison
+  dialog with metric delta badges and warning banners, auth modals, and account privacy controls.
+ 
+---
+ 
 ## ✨ What's New in v0.3.0
 
 Building on the hardened, calibrated pipeline from v0.2.0, this release
@@ -121,28 +148,39 @@ should not be bypassed — see [Design Principles](#-design-principles).
 ---
 
 ## 🧭 Design Principles
-
+ 
 1. 🔬 CV models detect; they do not diagnose.
 2. 🧩 The rules engine decides what recommendations are allowed — never
    the LLM.
 3. 💬 The LLM explains approved results; it never invents observations.
 4. 📏 Facial measurements are relative/normalized — no exact real-world
    dimensions are claimed without calibrated depth.
-5. 🚫 Poor-quality selfies are rejected rather than analyzed
-   unreliably.
-6. 🏷️ Every response carries a `pipeline_version` for reproducibility.
-7. ⚕️ No medical or diagnostic language appears anywhere in the output.
-
+5. 🚫 Poor-quality selfies are rejected rather than analyzed unreliably.
+6. 🔒 **Privacy by Default**: Zero image retention. Selfies are processed in-memory
+   and immediately discarded; only derived numeric metrics are stored.
+7. 🗑️ **True Data Ownership**: Account and scan deletions are physical, permanent
+   database deletions cascading immediately without soft-delete tombstones.
+8. 🏷️ Every response carries a `pipeline_version` for reproducibility.
+9. ⚕️ No medical or diagnostic language appears anywhere in the output.
+ 
 ---
-
+ 
 ## 📁 Project Structure
-
+ 
 ```text
 ai-face-analyzer/
 ├── app/
-│   ├── main.py                  # FastAPI service, structured logging & timing
-│   ├── schemas.py                # Pydantic request/response models
-│   ├── config.py                 # Centralized thresholds & constants
+│   ├── main.py                  # FastAPI service, auth & scan endpoints
+│   ├── schemas.py                # Pydantic auth, scan, delta & comparison models
+│   ├── config.py                 # Centralized thresholds, DB & JWT settings
+│   ├── auth/
+│   │   ├── security.py           # Bcrypt hashing, JWT issuance & jti token revocation
+│   │   └── dependencies.py       # FastAPI get_current_user security dependency
+│   ├── db/
+│   │   ├── session.py            # SQLAlchemy engine, session factory & init_db
+│   │   └── models.py             # User, RefreshToken & Scan ORM models (JSONB)
+│   ├── comparison/
+│   │   └── service.py            # Longitudinal deltas & comparability warning engine
 │   ├── pipeline/
 │   │   ├── quality.py            # Image quality gate
 │   │   ├── face_detect.py        # MediaPipe Face Landmarker
@@ -162,9 +200,15 @@ ai-face-analyzer/
 ├── tests/
 │   ├── sample_images/            # Categorized test fixtures
 │   ├── expected/notes.md         # Qualitative expectations & invariants
-│   └── test_pipeline.py
+│   ├── test_pipeline.py          # CV pipeline & quality gate test suite
+│   ├── test_rules_engine.py      # Deterministic recommendation rules test suite
+│   ├── test_llm_integration.py   # LLM schema, fallback & safety tests
+│   ├── test_auth.py              # Auth, JWT, refresh rotation & revocation tests
+│   ├── test_scans.py             # Multi-tenant isolation & cascade deletion tests
+│   └── test_comparison.py        # Longitudinal comparison & warning tests
 ├── static/
-│   └── index.html                # Web UI + PDF report export
+│   └── index.html                # Web UI + history, comparison & privacy controls
+├── public/                       # Vercel / static hosting sync
 ├── requirements.txt
 ├── .env.example
 └── README.md
@@ -205,65 +249,75 @@ curl -X POST http://localhost:8000/api/analyze \
 ```
 
 ### Run Tests
-
+ 
 ```bash
-python -m unittest tests/test_pipeline.py
+pytest -v
 ```
-
+ 
 ---
-
-## 🔌 API
-
-### `POST /api/analyze`
-
-Accepts a selfie (`multipart/form-data`, field `image`). Returns a
-structured JSON report (metrics, regions, confidence scores, and
-explained recommendations), or a `422` with a specific quality-gate
-rejection reason.
-
-### `GET /api/analyze/{scan_id}/overlay`
-
-Returns an annotated debug image showing landmarks, skin mask boundary,
-and flagged regions.
-
-### `GET /health`
-
-Liveness check. ❤️
-
-Full request/response schemas are in [`app/schemas.py`](app/schemas.py).
-
+ 
+## 🔌 API Reference
+ 
+### 🔐 Auth Endpoints
+ 
+- `POST /api/auth/register` — Register a new account (`email`, `password`). Returns JWT access & refresh tokens.
+- `POST /api/auth/login` — Authenticate existing user. Returns JWT access & refresh tokens.
+- `POST /api/auth/refresh` — Rotate refresh token. DB-backed with automatic reuse detection & immediate revocation.
+- `GET /api/auth/me` — Return the current authenticated user's profile.
+- `DELETE /api/users/me` — **Real cascading deletion** of account, scans, and active tokens.
+ 
+### 📸 Scan & Analysis Endpoints
+ 
+- `POST /api/analyze` — Anonymous scan fallback. Accepts a selfie (`multipart/form-data`, field `image`). Returns full metrics JSON and recommendations without persisting.
+- `POST /api/scans` — Authenticated scan persistence. Executes pipeline, stores derived metrics in PostgreSQL/SQLite `JSONB`, and discards the image immediately.
+- `GET /api/scans` — Paginated list of the user's past scans (`?page=1&limit=20`), sorted newest-first.
+- `GET /api/scans/{scan_id}` — Detailed report for a specific persisted scan owned by the user.
+- `DELETE /api/scans/{scan_id}` — **Real physical deletion** of a specific scan record from the database.
+ 
+### 📈 Longitudinal Comparison
+ 
+- `GET /api/scans/compare?ids=<id1>,<id2>` — Chronological delta analysis between two scans. Returns metric percentage deltas, face shape stability verification, and automatic **capture condition comparability warnings** (triggered if quality gap $\ge 0.20$ or lighting/pose disparity $\ge 0.25$).
+ 
+### 🖼️ Diagnostic & Utility
+ 
+- `GET /api/analyze/{scan_id}/overlay` — Annotated debug image displaying landmarks, skin mask boundary, and flagged regions.
+- `GET /health` — Liveness check. ❤️
+ 
+Full Pydantic schemas are defined in [`app/schemas.py`](app/schemas.py).
+ 
 ---
-
+ 
 ## ⚠️ Known Limitations
-
-- 💡 Warm/incandescent lighting can skew redness detection (CIELAB
-  `a*` channel); results are most consistent under neutral or daylight
-  lighting.
-- 🧔 Heavy facial hair or low bangs can compress geometry ratio
-  estimates by obscuring chin/hairline landmarks.
-- 🌓 Under-eye contrast detection is currently less reliable on very
-  dark skin tones — calibration thresholds are adjustable in
-  `config.py`.
-- 🗄️ No persistent scan history yet — each analysis is stateless
-  (planned for a later release).
-
+ 
+- 💡 Warm/incandescent lighting can skew redness detection (CIELAB `a*` channel); results are most consistent under neutral daylight. The comparison engine automatically warns if two scans were taken under disparate lighting.
+- 🧔 Heavy facial hair or low bangs can compress geometry ratio estimates by obscuring chin/hairline landmarks.
+- 🌓 Under-eye contrast detection is currently less reliable on very dark skin tones — calibration thresholds are configurable in `config.py`.
+ 
 ---
-
+ 
 ## 🗺️ Roadmap
-
+ 
 - [x] 🧠 Core CV pipeline (geometry + skin heuristics)
 - [x] 🧪 Automated test harness & calibration
 - [x] 🧩 Recommendation rules engine + LLM explanation layer
-- [ ] 🗄️ Persistent scan history & longitudinal comparison
+- [x] 🗄️ Persistent scan history & longitudinal comparison
+- [x] 🔐 Authentication & multi-user support (Zero-image retention)
 - [ ] 📱 Flutter mobile client
-- [ ] 🔐 Authentication & multi-user support
-- [ ] 🏭 Production hardening & bias evaluation across broader
-      skin-tone and lighting datasets
-
+- [ ] 🏭 Production hardening & bias evaluation across broader skin-tone and lighting datasets
+ 
 ---
-
+ 
 ## 📝 Changelog
-
+ 
+### v0.4.0
+- 🔐 Added user authentication with bcrypt, JWT access tokens, and DB-backed refresh token rotation with immediate reuse revocation.
+- 🗄️ Added PostgreSQL schema with native `JSONB` support for metrics and cross-compatible SQLite support for development.
+- 🛡️ Implemented strict zero-image retention privacy: photos are analyzed in-memory and immediately destroyed.
+- 🗑️ Added real physical database deletion for both individual scans and entire user accounts with cascading cleanup.
+- 📈 Added longitudinal comparison engine with metric deltas, face-shape stability check, and capture condition comparability warnings.
+- 🖥️ Redesigned web UI with Scanner / History views, compare modal, delta badges, and account privacy controls.
+- 🧪 Added full test coverage for auth, authorization isolation, cascades, and comparison logic (58 tests total).
+ 
 ### v0.3.0
 - 🧩 Added deterministic recommendation rules engine.
 - 💬 Added LLM explanation layer with schema validation and fallback.
