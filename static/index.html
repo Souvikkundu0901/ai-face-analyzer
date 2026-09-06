@@ -344,6 +344,24 @@
       display: block;
     }
 
+    /* Scanning Laser Line Animation */
+    .scan-laser {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent 0%, #ec4899 50%, transparent 100%);
+      box-shadow: 0 0 16px 4px rgba(236, 72, 153, 0.85);
+      animation: scanLaser 1.5s ease-in-out infinite alternate;
+      z-index: 10;
+      pointer-events: none;
+    }
+    @keyframes scanLaser {
+      0% { top: 4%; opacity: 0.85; }
+      100% { top: 96%; opacity: 1; }
+    }
+
     .view-toggle-bar {
       display: flex;
       gap: 6px;
@@ -1315,6 +1333,7 @@
 
           <!-- Preview & Toggle -->
           <div class="preview-box hidden" id="preview-box">
+            <div class="scan-laser hidden" id="scan-laser"></div>
             <img id="preview-img" alt="Selfie Preview" />
             <video id="webcam-video" autoplay playsinline class="hidden"></video>
           </div>
@@ -1781,6 +1800,9 @@
     const viewToggleBar = document.getElementById('view-toggle-bar');
     const tabOverlay = document.getElementById('tab-overlay');
     const tabOriginal = document.getElementById('tab-original');
+    const btnExportPdf = document.getElementById('btn-export-pdf');
+    const scanLaser = document.getElementById('scan-laser');
+
     // URL Parameters & Debug Mode Gate (?debug=true)
     const urlParams = new URLSearchParams(window.location.search);
     const isDebugMode = urlParams.get('debug') === 'true';
@@ -1825,15 +1847,19 @@
       pill.addEventListener('click', async () => {
         const sampleName = pill.getAttribute('data-sample');
         try {
-          const res = await fetch(`/static/../tests/sample_images/${sampleName}`);
+          // 1. Try static samples directory
+          let res = await fetch(`/static/samples/${sampleName}`);
           if (!res.ok) {
-            // Try fetching from direct endpoint or mock
-            const blob = await fetchSampleBlob(sampleName);
-            if (blob) handleFileSelect(new File([blob], sampleName, { type: 'image/jpeg' }));
+            res = await fetch(`/samples/${sampleName}`);
+          }
+          if (res.ok) {
+            const blob = await res.blob();
+            handleFileSelect(new File([blob], sampleName, { type: 'image/jpeg' }));
             return;
           }
-          const blob = await res.blob();
-          handleFileSelect(new File([blob], sampleName, { type: 'image/jpeg' }));
+          // 2. Fallback search
+          const blob = await fetchSampleBlob(sampleName);
+          if (blob) handleFileSelect(new File([blob], sampleName, { type: 'image/jpeg' }));
         } catch (e) {
           console.warn('Sample load error:', e);
         }
@@ -1842,6 +1868,8 @@
 
     async function fetchSampleBlob(name) {
       const paths = [
+        `/static/samples/${name}`,
+        `/samples/${name}`,
         `/tests/sample_images/${name}`,
         `/tests/sample_images/good_lighting/${name}`,
         `/tests/sample_images/varied_skin_tones/${name}`,
@@ -1981,6 +2009,7 @@
 
       btnAnalyze.disabled = true;
       btnText.innerHTML = '<span class="spinner"></span> Analyzing...';
+      if (scanLaser) scanLaser.classList.remove('hidden');
       hideAlert();
 
       const formData = new FormData();
@@ -2052,6 +2081,7 @@
       } finally {
         btnAnalyze.disabled = false;
         btnText.textContent = 'Analyze Face';
+        if (scanLaser) scanLaser.classList.add('hidden');
       }
     });
 
@@ -2217,9 +2247,11 @@
     }
 
     // PDF Export / Print Report
-    btnExportPdf.addEventListener('click', () => {
-      window.print();
-    });
+    if (btnExportPdf) {
+      btnExportPdf.addEventListener('click', () => {
+        window.print();
+      });
+    }
 
     // Developer JSON Drawer Toggle
     document.getElementById('toggle-json-drawer').addEventListener('click', () => {
