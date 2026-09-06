@@ -9,27 +9,48 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary-pink: #ff659d;
-      --primary-hover: #f43f7d;
-      --pink-light: #ffe6f0;
-      --pink-soft: #fff2f6;
-      --pink-subtle: #fff8fa;
-      --text-dark: #1e293b;
-      --text-muted: #64748b;
-      --text-subtle: #94a3b8;
-      --bg-page: #fdfafb;
+      /* Brand Pink Accent (Used sparingly: primary CTA, active tab indicator, brand logo) */
+      --primary-pink: #ec4899;
+      --primary-hover: #db2777;
+      --pink-light: #fdf2f8;
+      --pink-soft: #fce7f3;
+      --pink-subtle: #fdf2f8;
+      
+      /* Neutral / Text hierarchy */
+      --text-dark: #0f172a;
+      --text-muted: #475569;
+      --text-subtle: #64748b;
+      --bg-page: #f8fafc;
       --bg-card: #ffffff;
-      --border-light: #f1e4ea;
-      --border-subtle: #f8eaf0;
+      --border-light: #e2e8f0;
+      --border-subtle: #f1f5f9;
+
+      /* Semantic State Colors */
       --success: #10b981;
+      --success-light: #ecfdf5;
+      --success-text: #065f46;
+      --success-border: #a7f3d0;
+
       --warning: #f59e0b;
+      --warning-light: #fef3c7;
+      --warning-text: #92400e;
+      --warning-border: #fde68a;
+
       --danger: #ef4444;
+      --danger-light: #fef2f2;
+      --danger-text: #991b1b;
+      --danger-border: #fecaca;
+
+      --info-slate: #64748b;
+      --info-light: #f1f5f9;
+      --info-text: #334155;
+
       --radius-sm: 8px;
       --radius-md: 14px;
       --radius-lg: 20px;
-      --shadow-sm: 0 2px 6px rgba(255, 101, 157, 0.06);
-      --shadow-md: 0 8px 24px rgba(255, 101, 157, 0.09);
-      --shadow-lg: 0 16px 36px rgba(0, 0, 0, 0.06);
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+      --shadow-lg: 0 10px 25px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
     }
 
     * {
@@ -373,8 +394,8 @@
 
     /* Results Header Score Ring */
     .overview-hero-card {
-      background: linear-gradient(135deg, #fff0f5 0%, #ffffff 100%);
-      border: 1px solid #fbd2e1;
+      background: #ffffff;
+      border: 1px solid var(--border-light);
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -392,20 +413,20 @@
       width: 78px;
       height: 78px;
       border-radius: 50%;
-      background: #ffffff;
-      box-shadow: 0 4px 14px rgba(255, 101, 157, 0.18);
+      background: #f8fafc;
+      box-shadow: var(--shadow-sm);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      border: 3px solid var(--primary-pink);
+      border: 3px solid #0f172a;
       flex-shrink: 0;
     }
 
     .score-circle-num {
       font-size: 1.5rem;
       font-weight: 800;
-      color: var(--primary-pink);
+      color: #0f172a;
       line-height: 1;
     }
 
@@ -458,9 +479,12 @@
       left: 0;
       right: 0;
       height: 3px;
-      background: var(--primary-pink);
-      opacity: 0.8;
+      background: var(--info-slate);
     }
+    .stat-tile.tile-symmetry::before { background: var(--success); }
+    .stat-tile.tile-shape::before { background: var(--info-slate); }
+    .stat-tile.tile-spots::before { background: var(--warning); }
+    .stat-tile.tile-clarity::before { background: var(--success); }
 
     .stat-tile-label {
       font-size: 0.725rem;
@@ -480,7 +504,7 @@
     .stat-tile-sub {
       font-size: 0.725rem;
       font-weight: 600;
-      color: var(--primary-pink);
+      color: var(--text-muted);
     }
 
     /* Progress Rows */
@@ -491,8 +515,8 @@
     }
 
     .skin-meter-row {
-      background: #faf7f8;
-      border: 1px solid var(--border-subtle);
+      background: #f8fafc;
+      border: 1px solid var(--border-light);
       border-radius: 12px;
       padding: 14px 16px;
     }
@@ -514,7 +538,7 @@
       width: 10px;
       height: 10px;
       border-radius: 50%;
-      background: var(--primary-pink);
+      background: var(--info-slate);
     }
 
     .meter-name {
@@ -526,24 +550,62 @@
     .meter-badge {
       font-size: 0.75rem;
       font-weight: 700;
-      padding: 2px 8px;
-      border-radius: 10px;
-      background: var(--pink-light);
-      color: var(--primary-pink);
+      padding: 2px 9px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .meter-badge.status-optimal {
+      background: var(--success-light);
+      color: var(--success-text);
+      border: 1px solid var(--success-border);
+    }
+    .meter-badge.status-moderate {
+      background: var(--warning-light);
+      color: var(--warning-text);
+      border: 1px solid var(--warning-border);
+    }
+    .meter-badge.status-elevated {
+      background: var(--danger-light);
+      color: var(--danger-text);
+      border: 1px solid var(--danger-border);
     }
 
     .meter-track {
       height: 8px;
-      background: #e9ecef;
+      background: #e2e8f0;
       border-radius: 6px;
       overflow: hidden;
     }
 
     .meter-fill {
       height: 100%;
-      background: linear-gradient(90deg, #ff8fb7 0%, #ff659d 100%);
       border-radius: 6px;
       transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .meter-fill.fill-optimal {
+      background: linear-gradient(90deg, #34d399 0%, #10b981 100%);
+    }
+    .meter-fill.fill-moderate {
+      background: linear-gradient(90deg, #fbbf24 0%, #f59e0b 100%);
+    }
+    .meter-fill.fill-elevated {
+      background: linear-gradient(90deg, #f87171 0%, #ef4444 100%);
+    }
+
+    /* Status Pill Utilities */
+    .status-pill-optimal {
+      background: var(--success-light) !important;
+      color: var(--success-text) !important;
+    }
+    .status-pill-warning {
+      background: var(--warning-light) !important;
+      color: var(--warning-text) !important;
+    }
+    .status-pill-danger {
+      background: var(--danger-light) !important;
+      color: var(--danger-text) !important;
     }
 
     /* Geometry Ratios Table */
@@ -584,21 +646,36 @@
       background: var(--bg-card);
       border: 1px solid var(--border-light);
       border-radius: 14px;
-      padding: 20px 20px 20px 24px;
+      padding: 18px 20px;
       margin-bottom: 12px;
-      border-left: 4px solid var(--primary-pink);
-      box-shadow: 0 4px 20px rgba(255, 101, 157, 0.08);
+      border-left: 4px solid var(--info-slate);
+      box-shadow: var(--shadow-sm);
       transition: box-shadow 0.2s, transform 0.2s;
     }
     .recommendation-card:hover {
-      box-shadow: 0 6px 24px rgba(255, 101, 157, 0.14);
+      box-shadow: var(--shadow-md);
       transform: translateY(-1px);
     }
-    .recommendation-card.severity-high { border-left-color: var(--danger); }
-    .recommendation-card.severity-moderate { border-left-color: var(--primary-pink); }
-    .recommendation-card.severity-low { border-left-color: var(--warning); }
-    .recommendation-card.severity-good { border-left-color: var(--success); }
-    .recommendation-card.severity-info { border-left-color: var(--text-subtle); }
+    .recommendation-card.severity-high {
+      border-left-color: var(--danger);
+      background: #fffcfc;
+    }
+    .recommendation-card.severity-moderate {
+      border-left-color: var(--warning);
+      background: #fffdfa;
+    }
+    .recommendation-card.severity-low {
+      border-left-color: #3b82f6;
+      background: #f8faff;
+    }
+    .recommendation-card.severity-good {
+      border-left-color: var(--success);
+      background: #f9fdfa;
+    }
+    .recommendation-card.severity-info {
+      border-left-color: var(--info-slate);
+      background: #f8fafc;
+    }
     .rec-card-header {
       display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
     }
@@ -608,7 +685,7 @@
     }
     .rec-id-badge {
       font-size: 0.65rem; font-weight: 600;
-      background: var(--pink-light); color: var(--primary-pink);
+      background: var(--info-light); color: var(--info-text);
       padding: 2px 8px; border-radius: 999px; margin-left: auto;
       white-space: nowrap;
     }
@@ -616,8 +693,9 @@
       font-size: 0.875rem; color: var(--text-muted); line-height: 1.6;
     }
     .insights-summary {
-      background: var(--pink-soft);
+      background: #f8fafc;
       border: 1px solid var(--border-light);
+      border-left: 4px solid var(--primary-pink);
       border-radius: 14px;
       padding: 18px 20px;
       margin-top: 16px;
@@ -978,6 +1056,134 @@
       align-items: center;
     }
 
+    /* Responsive Breakpoints & Mobile Touch Targets */
+    @media (max-width: 1024px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      .app-container {
+        max-width: 760px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 14px 10px 48px;
+      }
+      .app-container {
+        max-width: 100%;
+      }
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+        margin-bottom: 20px;
+      }
+      .header-actions {
+        width: 100%;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .brand-titles h1 {
+        font-size: 1.2rem;
+      }
+      .view-nav-tabs {
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+        gap: 6px;
+        padding-bottom: 4px;
+      }
+      .view-nav-tab {
+        padding: 9px 14px;
+        font-size: 0.85rem;
+        min-height: 44px;
+        flex-shrink: 0;
+      }
+      .btn {
+        min-height: 44px;
+        padding: 11px 16px;
+      }
+      .sample-pill {
+        min-height: 38px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6px 12px;
+      }
+      .toggle-tab {
+        min-height: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .stats-tiles-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+      .stat-tile {
+        padding: 12px;
+      }
+      .stat-tile-val {
+        font-size: 1.2rem;
+      }
+      .overview-hero-card {
+        flex-direction: column;
+        text-align: center;
+        gap: 14px;
+        padding: 18px 14px;
+      }
+      .hero-metric-block {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+      }
+      .history-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      .history-metrics-row {
+        flex-wrap: wrap;
+        gap: 8px 12px;
+      }
+      .modal-backdrop {
+        padding: 8px;
+      }
+      .modal-box {
+        max-height: 94vh;
+        border-radius: var(--radius-md);
+      }
+      .modal-header {
+        padding: 16px;
+      }
+      .modal-body {
+        padding: 16px;
+      }
+      .modal-footer {
+        padding: 12px 16px;
+        flex-direction: column-reverse;
+        gap: 8px;
+      }
+      .modal-footer .btn {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .stats-tiles-grid {
+        grid-template-columns: 1fr;
+      }
+      .btn-group {
+        flex-direction: column;
+      }
+      .btn-group .btn {
+        width: 100%;
+      }
+    }
+
     /* Printable Report Sheet Styling */
     @media print {
       body {
@@ -1025,7 +1231,7 @@
         </div>
       </div>
       <div class="header-actions">
-        <div class="status-pill">
+        <div class="status-pill hidden" id="pipeline-status-badge" title="Pipeline v0.4.0 Active">
           <span class="status-dot"></span> Pipeline v0.4.0 Active
         </div>
         <button class="btn btn-outline-pink hidden" id="btn-export-pdf" style="padding: 7px 14px; font-size: 0.8125rem;">
@@ -1073,7 +1279,7 @@
             <span class="card-title">
               <span class="card-title-icon">📷</span> Capture / Upload
             </span>
-            <span id="scan-id-tag" style="font-size: 0.725rem; font-family: monospace; color: var(--text-muted);"></span>
+            <span id="scan-id-tag" class="hidden" style="font-size: 0.725rem; font-family: monospace; color: var(--text-muted);"></span>
           </div>
 
           <div class="dropzone" id="dropzone">
@@ -1119,7 +1325,7 @@
           </div>
 
           <div class="view-toggle-bar hidden" id="view-toggle-bar">
-            <button class="toggle-tab active" id="tab-overlay">Debug Overlay</button>
+            <button class="toggle-tab active" id="tab-overlay">Analysis Overlay</button>
             <button class="toggle-tab" id="tab-original">Original Photo</button>
           </div>
         </div>
@@ -1185,25 +1391,25 @@
 
         <!-- 4 Summary Tiles -->
         <div class="stats-tiles-grid hidden" id="summary-tiles">
-          <div class="stat-tile">
+          <div class="stat-tile tile-symmetry">
             <div class="stat-tile-label">Symmetry</div>
             <div class="stat-tile-val" id="tile-symmetry">94%</div>
-            <div class="stat-tile-sub">Bilateral Balance</div>
+            <div class="stat-tile-sub" style="color: var(--success-text);">Bilateral Balance</div>
           </div>
-          <div class="stat-tile">
+          <div class="stat-tile tile-shape">
             <div class="stat-tile-label">Face Shape</div>
-            <div class="stat-tile-val" id="tile-shape" style="color: var(--primary-pink); font-size: 1.15rem;">OVAL</div>
-            <div class="stat-tile-sub" id="tile-shape-conf">92% Conf</div>
+            <div class="stat-tile-val" id="tile-shape" style="color: var(--text-dark); font-size: 1.15rem;">OVAL</div>
+            <div class="stat-tile-sub" id="tile-shape-conf" style="color: var(--text-muted);">92% Conf</div>
           </div>
-          <div class="stat-tile">
+          <div class="stat-tile tile-spots">
             <div class="stat-tile-label">Visible Spots</div>
             <div class="stat-tile-val" id="tile-spots">1</div>
-            <div class="stat-tile-sub">Detected Regions</div>
+            <div class="stat-tile-sub" style="color: var(--warning-text);">Detected Regions</div>
           </div>
-          <div class="stat-tile">
+          <div class="stat-tile tile-clarity">
             <div class="stat-tile-label">Skin Clarity</div>
             <div class="stat-tile-val" id="tile-clarity">88%</div>
-            <div class="stat-tile-sub">Texture Uniformity</div>
+            <div class="stat-tile-sub" style="color: var(--success-text);">Texture Uniformity</div>
           </div>
         </div>
 
@@ -1318,8 +1524,8 @@
           </div>
         </div>
 
-        <!-- Developer JSON Drawer (Collapsible) -->
-        <div class="card no-print">
+        <!-- Developer JSON Drawer (Collapsible, Gated behind ?debug=true) -->
+        <div class="card no-print hidden" id="dev-json-card">
           <div class="card-header" style="margin-bottom: 10px; cursor: pointer;" id="toggle-json-drawer">
             <span class="card-title" style="font-size: 0.9rem;">
               <span class="card-title-icon">⚙️</span> Developer JSON Contract
@@ -1575,7 +1781,9 @@
     const viewToggleBar = document.getElementById('view-toggle-bar');
     const tabOverlay = document.getElementById('tab-overlay');
     const tabOriginal = document.getElementById('tab-original');
-    const btnExportPdf = document.getElementById('btn-export-pdf');
+    // URL Parameters & Debug Mode Gate (?debug=true)
+    const urlParams = new URLSearchParams(window.location.search);
+    const isDebugMode = urlParams.get('debug') === 'true';
 
     // UI Result Elements
     const emptyState = document.getElementById('empty-state');
@@ -1584,6 +1792,15 @@
     const skinCard = document.getElementById('skin-card');
     const geometryCard = document.getElementById('geometry-card');
     const qualityCard = document.getElementById('quality-card');
+
+    if (isDebugMode) {
+      const statusBadge = document.getElementById('pipeline-status-badge');
+      if (statusBadge) statusBadge.classList.remove('hidden');
+      const jsonCard = document.getElementById('dev-json-card');
+      if (jsonCard) jsonCard.classList.remove('hidden');
+      const scanIdTag = document.getElementById('scan-id-tag');
+      if (scanIdTag) scanIdTag.classList.remove('hidden');
+    }
 
     // File Drop & Select
     dropzone.addEventListener('click', () => fileInput.click());
@@ -1657,6 +1874,17 @@
         document.getElementById('camera-controls').classList.add('hidden');
         viewToggleBar.classList.add('hidden');
         btnAnalyze.disabled = false;
+
+        // Reset any previous results until analysis is explicitly triggered
+        emptyState.classList.remove('hidden');
+        resultsHero.classList.add('hidden');
+        summaryTiles.classList.add('hidden');
+        skinCard.classList.add('hidden');
+        geometryCard.classList.add('hidden');
+        qualityCard.classList.add('hidden');
+        btnExportPdf.classList.add('hidden');
+        document.getElementById('insights-section').classList.add('hidden');
+        document.getElementById('warnings-box').innerHTML = '';
       };
       reader.readAsDataURL(file);
     }
@@ -1688,10 +1916,7 @@
       canvas.width = webcamVideo.videoWidth;
       canvas.height = webcamVideo.videoHeight;
       const ctx = canvas.getContext('2d');
-      ctx.translate(canvas.width, 0);
-      ctx.scale(-1, 1);
       ctx.drawImage(webcamVideo, 0, 0);
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
       canvas.toBlob((blob) => {
         selectedFile = new File([blob], 'camera_selfie.jpg', { type: 'image/jpeg' });
         originalDataUrl = canvas.toDataURL('image/jpeg');
@@ -1702,6 +1927,18 @@
         cameraControls.classList.add('hidden');
         viewToggleBar.classList.add('hidden');
         btnAnalyze.disabled = false;
+        
+        // Reset any previous results until user clicks Analyze Face
+        emptyState.classList.remove('hidden');
+        resultsHero.classList.add('hidden');
+        summaryTiles.classList.add('hidden');
+        skinCard.classList.add('hidden');
+        geometryCard.classList.add('hidden');
+        qualityCard.classList.add('hidden');
+        btnExportPdf.classList.add('hidden');
+        document.getElementById('insights-section').classList.add('hidden');
+        document.getElementById('warnings-box').innerHTML = '';
+
         stopCamera();
       }, 'image/jpeg', 0.95);
     });
@@ -1835,7 +2072,13 @@
     }
 
     function renderFullDashboard(data) {
-      document.getElementById('scan-id-tag').textContent = 'ID: ' + data.scan_id.substring(0, 8);
+      if (isDebugMode) {
+        document.getElementById('scan-id-tag').textContent = 'ID: ' + data.scan_id.substring(0, 8);
+        document.getElementById('scan-id-tag').classList.remove('hidden');
+        document.getElementById('raw-json').textContent = JSON.stringify(data, null, 2);
+      } else {
+        document.getElementById('scan-id-tag').classList.add('hidden');
+      }
       document.getElementById('report-scan-id').textContent = data.scan_id;
       document.getElementById('report-date').textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 
@@ -1900,24 +2143,25 @@
         const catalogMeta = {
           "REDNESS_MODERATE": { icon: "🔴", severity: "moderate", title: "Moderate Redness" },
           "REDNESS_HIGH": { icon: "🔴", severity: "high", title: "Elevated Redness" },
-          "PIGMENTATION_VARIATION": { icon: "🎨", severity: "moderate", title: "Tone/Pigmentation Variation" },
-          "TEXTURE_ROUGH": { icon: "🧱", severity: "moderate", title: "Texture Roughness" },
-          "UNDER_EYE_DARK": { icon: "👁️", severity: "moderate", title: "Under-Eye Shade Deficit" },
+          "PIGMENTATION_VARIATION": { icon: "🎨", severity: "moderate", title: "Tone & Pigmentation Variation" },
+          "TEXTURE_ROUGH": { icon: "🧱", severity: "moderate", title: "Skin Texture Unevenness" },
+          "UNDER_EYE_DARK": { icon: "👁️", severity: "moderate", title: "Under-Eye Area" },
           "SPOTS_FEW": { icon: "🔍", severity: "low", title: "Surface Spots Detected" },
           "SPOTS_MANY": { icon: "🔍", severity: "moderate", title: "Multiple Surface Spots Detected" },
-          "IMAGE_QUALITY_LOW": { icon: "📷", severity: "info", title: "Image Quality Alert" },
+          "IMAGE_QUALITY_LOW": { icon: "📷", severity: "info", title: "Image Quality Notice" },
           "ALL_CLEAR": { icon: "✅", severity: "good", title: "Optimal Skin Characteristics" }
         };
 
         let cardsHtml = '';
         data.report.explanations.forEach(item => {
           const meta = catalogMeta[item.id] || { icon: "✨", severity: "info", title: item.id.replace(/_/g, ' ') };
+          const idBadgeHtml = isDebugMode ? `<span class="rec-id-badge">${item.id}</span>` : '';
           cardsHtml += `
             <div class="recommendation-card severity-${meta.severity}">
               <div class="rec-card-header">
                 <span class="rec-icon">${meta.icon}</span>
                 <span class="rec-title">${meta.title}</span>
-                <span class="rec-id-badge">${item.id}</span>
+                ${idBadgeHtml}
               </div>
               <div class="rec-text">${item.text}</div>
             </div>
@@ -1945,13 +2189,31 @@
 
     function setSkinMeter(id, score, name) {
       const pct = Math.round(score * 100);
-      let badgeLabel = 'Mild';
-      if (pct > 60) badgeLabel = 'Elevated';
-      else if (pct > 30) badgeLabel = 'Moderate';
-      else badgeLabel = 'Optimal';
+      let badgeLabel = 'Optimal';
+      let badgeClass = 'status-optimal';
+      let fillClass = 'fill-optimal';
 
-      document.getElementById(`badge-${id}`).textContent = `${badgeLabel} (${pct}%)`;
-      document.getElementById(`fill-${id}`).style.width = `${pct}%`;
+      if (pct > 60) {
+        badgeLabel = 'Elevated';
+        badgeClass = 'status-elevated';
+        fillClass = 'fill-elevated';
+      } else if (pct > 30) {
+        badgeLabel = 'Moderate';
+        badgeClass = 'status-moderate';
+        fillClass = 'fill-moderate';
+      } else {
+        badgeLabel = 'Optimal';
+        badgeClass = 'status-optimal';
+        fillClass = 'fill-optimal';
+      }
+
+      const badgeEl = document.getElementById(`badge-${id}`);
+      badgeEl.textContent = `${badgeLabel} (${pct}%)`;
+      badgeEl.className = `meter-badge ${badgeClass}`;
+
+      const fillEl = document.getElementById(`fill-${id}`);
+      fillEl.style.width = `${pct}%`;
+      fillEl.className = `meter-fill ${fillClass}`;
     }
 
     // PDF Export / Print Report
