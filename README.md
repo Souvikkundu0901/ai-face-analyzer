@@ -353,6 +353,13 @@ Full Pydantic schemas are defined in [`app/schemas.py`](app/schemas.py).
 
 ---
 
+## 🔒 Security & Deployment
+
+- 🛡️ **[Security Policy & Architecture (`SECURITY.md`)](SECURITY.md)** — Zero-image retention policy, sliding-window rate limiting, magic byte validation, and vulnerability disclosure SLA.
+- 🚀 **[Deployment & Operations Guide (`docs/deployment.md`)](docs/deployment.md)** — Alembic database migrations, environment parity, health probes, automated backups, and rollback procedures.
+
+---
+
 ## ⚕️ Disclaimer
 
 This project reports visible facial and skin characteristics only. It
