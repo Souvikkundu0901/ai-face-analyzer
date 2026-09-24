@@ -1230,6 +1230,51 @@
       padding-bottom: 12px;
       margin-bottom: 20px;
     }
+
+    /* Footer Styling */
+    .app-footer {
+      margin-top: 48px;
+      padding: 32px 16px;
+      border-top: 1px solid var(--border-light);
+      text-align: center;
+    }
+    .footer-content {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .footer-link {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+    .footer-link:hover {
+      color: var(--primary-pink);
+    }
+    .footer-divider {
+      color: var(--border-light);
+      font-size: 0.75rem;
+    }
+    .footer-disclaimer {
+      font-size: 0.75rem;
+      color: var(--text-subtle);
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+    .footer-copyright {
+      font-size: 0.6875rem;
+      color: var(--text-subtle);
+      font-weight: 500;
+    }
   </style>
 </head>
 <body>
@@ -1249,8 +1294,8 @@
         </div>
       </div>
       <div class="header-actions">
-        <div class="status-pill hidden" id="pipeline-status-badge" title="Pipeline v0.4.0 Active">
-          <span class="status-dot"></span> Pipeline v0.4.0 Active
+        <div class="status-pill hidden" id="pipeline-status-badge" title="Pipeline v0.5.0 Active">
+          <span class="status-dot"></span> Pipeline v0.5.0 Active
         </div>
         <button class="btn btn-outline-pink hidden" id="btn-export-pdf" style="padding: 7px 14px; font-size: 0.8125rem;">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
@@ -1602,6 +1647,27 @@
         </div>
       </div>
     </div>
+
+    <!-- Application Footer with Privacy & Terms Links -->
+    <footer class="app-footer no-print">
+      <div class="footer-content">
+        <div class="footer-links">
+          <a href="/privacy" class="footer-link">Privacy Policy</a>
+          <span class="footer-divider">•</span>
+          <a href="/terms" class="footer-link">Terms & Conditions</a>
+          <span class="footer-divider">•</span>
+          <a href="/docs" target="_blank" class="footer-link">API Documentation</a>
+          <span class="footer-divider">•</span>
+          <a href="https://github.com/Souvikkundu0901/ai-face-analyzer" target="_blank" class="footer-link">GitHub Repository</a>
+        </div>
+        <p class="footer-disclaimer">
+          AI Face Analyzer reports visible facial and skin surface characteristics for cosmetic and wellness tracking. It does not provide medical diagnosis or treatment.
+        </p>
+        <p class="footer-copyright">
+          © 2026 AI Face Analyzer. Privacy-first zero-image retention architecture.
+        </p>
+      </div>
+    </footer>
 
     <!-- Modals -->
 

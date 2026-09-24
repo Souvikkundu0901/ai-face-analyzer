@@ -841,3 +841,22 @@ def serve_index():
     if index_file.exists():
         return FileResponse(str(index_file))
     return {"message": "AI Face Analyzer API is running. Visit /docs for OpenAPI documentation."}
+
+
+@app.get("/privacy", include_in_schema=False)
+def serve_privacy():
+    """Serve the Privacy Policy page."""
+    privacy_file = BASE_DIR / "static" / "privacy.html"
+    if privacy_file.exists():
+        return FileResponse(str(privacy_file))
+    return FileResponse(str(BASE_DIR / "static" / "index.html"))
+
+
+@app.get("/terms", include_in_schema=False)
+def serve_terms():
+    """Serve the Terms and Conditions page."""
+    terms_file = BASE_DIR / "static" / "terms.html"
+    if terms_file.exists():
+        return FileResponse(str(terms_file))
+    return FileResponse(str(BASE_DIR / "static" / "index.html"))
+
