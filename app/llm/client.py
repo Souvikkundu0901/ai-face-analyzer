@@ -103,17 +103,25 @@ async def generate_explanation(
     On ANY failure at steps 2-4, falls back to canned template text.
     The request always succeeds — never fails due to LLM issues.
     """
+    from app.monitoring.metrics import metrics
+    import time
+    t_start = time.perf_counter()
     cache_key = _cache_key(triggered_ids)
 
     # 1. Check cache
     if cache_key in _explanation_cache:
         logger.debug(f"Cache hit for recommendation combo: {sorted(triggered_ids)}")
+        metrics.record_llm_call(success=True, fallback_triggered=False, duration_ms=(time.perf_counter() - t_start) * 1000.0)
         return _explanation_cache[cache_key]
 
     # 2. Attempt Gemini API call
     try:
         report = await _call_gemini(triggered_ids, supporting_scores, face_shape)
+        duration_ms = (time.perf_counter() - t_start) * 1000.0
+        metrics.record_llm_call(success=True, fallback_triggered=False, duration_ms=duration_ms)
     except Exception as e:
+        duration_ms = (time.perf_counter() - t_start) * 1000.0
+        metrics.record_llm_call(success=False, fallback_triggered=True, duration_ms=duration_ms)
         logger.error(f"LLM API call failed: {e}. Using canned fallback text.")
         report = _build_fallback_report(triggered_ids)
         # Cache the fallback too so we don't retry failed combos repeatedly

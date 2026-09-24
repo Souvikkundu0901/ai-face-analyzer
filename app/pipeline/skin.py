@@ -104,26 +104,33 @@ def analyze_redness(lab_img: np.ndarray, skin_mask: np.ndarray, landmarks: List[
 
 def analyze_pigmentation(lab_img: np.ndarray, skin_mask: np.ndarray) -> float:
     """
-    Compute pigmentation variation score (0.0 - 1.0) using luminance (L*) standard deviation
-    and local patch contrast on the skin mask.
+    Compute pigmentation variation score (0.0 - 1.0) using relative luminance (L*)
+    coefficient of variation and local patch contrast on the skin mask.
+    Calibrated in Phase 5 to ensure equity across the entire Fitzpatrick tone spectrum (I-VI).
     """
-    l_channel = lab_img[:, :, 0]
+    l_channel = lab_img[:, :, 0].astype(np.float32)
     skin_l_values = l_channel[skin_mask > 0]
     if len(skin_l_values) == 0:
         return 0.0
 
+    mean_l = float(np.mean(skin_l_values))
     global_std = float(np.std(skin_l_values))
+
+    # Reference mean luminance (normalized around standard mid-tone L* = 128.0)
+    scale_factor = 128.0 / max(mean_l, 35.0)
+    relative_global_std = global_std * scale_factor
 
     # Local median filtering
     ksize = PIGMENTATION_CONFIG["median_blur_ksize"]
-    local_blur = cv2.medianBlur(l_channel, ksize)
+    local_blur = cv2.medianBlur(lab_img[:, :, 0], ksize).astype(np.float32)
     local_diff = cv2.absdiff(l_channel, local_blur)
     local_skin_diff = local_diff[skin_mask > 0]
     local_mean_diff = float(np.mean(local_skin_diff)) if len(local_skin_diff) > 0 else 0.0
+    relative_local_diff = local_mean_diff * scale_factor
 
     score = (
-        ((global_std - PIGMENTATION_CONFIG["std_baseline"]) / PIGMENTATION_CONFIG["std_scale"]) * PIGMENTATION_CONFIG["global_weight"] +
-        ((local_mean_diff - PIGMENTATION_CONFIG["local_diff_baseline"]) / PIGMENTATION_CONFIG["local_diff_scale"]) * PIGMENTATION_CONFIG["local_weight"]
+        ((relative_global_std - 20.0) / 25.0) * PIGMENTATION_CONFIG["global_weight"] +
+        ((relative_local_diff - 4.0) / 10.0) * PIGMENTATION_CONFIG["local_weight"]
     )
     norm_pigmentation = float(np.clip(score, 0.0, 1.0))
     return round(norm_pigmentation, 2)

@@ -14,7 +14,7 @@ MODEL_PATH = MODELS_DIR / "face_landmarker.task"
 MODEL_URL = "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task"
 
 # Version identifier — bump when thresholds or pipeline logic are modified
-PIPELINE_VERSION = "analysis-v0.4.0"
+PIPELINE_VERSION = "analysis-v0.5.0"
 
 # Verbose debug logging flag
 DEBUG_MODE = os.environ.get("DEBUG", "false").lower() in ("true", "1", "yes")
@@ -48,6 +48,29 @@ REFRESH_TOKEN_EXPIRE_DAYS = int(os.environ.get("REFRESH_TOKEN_EXPIRE_DAYS", "7")
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.0-flash")
 LLM_TIMEOUT_SECONDS = int(os.environ.get("LLM_TIMEOUT_SECONDS", "10"))
+
+# ==============================================================================
+# 1e. Security & Upload Limits (Phase 5 Hardening)
+# ==============================================================================
+MAX_UPLOAD_SIZE_BYTES = int(os.environ.get("MAX_UPLOAD_SIZE_BYTES", str(10 * 1024 * 1024)))  # 10 MB
+
+# CORS Allowed Origins
+raw_origins = os.environ.get("ALLOWED_ORIGINS", "")
+if raw_origins.strip():
+    ALLOWED_ORIGINS = [o.strip() for o in raw_origins.split(",") if o.strip()]
+else:
+    # Default allowed origins for local dev and standard Render deployments
+    ALLOWED_ORIGINS = [
+        "http://localhost:8000",
+        "http://127.0.0.1:8000",
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "https://ai-face-analyzer.onrender.com",
+    ]
+
+# Rate Limiting Configuration
+RATE_LIMIT_AUTH_PER_MINUTE = int(os.environ.get("RATE_LIMIT_AUTH_PER_MINUTE", "5"))
+RATE_LIMIT_SCAN_PER_MINUTE = int(os.environ.get("RATE_LIMIT_SCAN_PER_MINUTE", "10"))
 
 
 # ==============================================================================

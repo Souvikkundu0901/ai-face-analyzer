@@ -16,7 +16,17 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, Response, FileResponse
 from fastapi.staticfiles import StaticFiles
 
-from app.config import PIPELINE_VERSION, BASE_DIR, MAX_INPUT_DIMENSION, DEBUG_MODE
+from app.config import (
+    PIPELINE_VERSION,
+    BASE_DIR,
+    MAX_INPUT_DIMENSION,
+    DEBUG_MODE,
+    ALLOWED_ORIGINS,
+    MAX_UPLOAD_SIZE_BYTES,
+    JWT_SECRET_KEY,
+)
+from app.security.validation import validate_image_upload
+from app.security.rate_limiter import limit_auth_requests, limit_scan_requests
 from app.schemas import (
     AnalysisResponseSchema,
     ImageQualitySchema,
@@ -67,6 +77,10 @@ from app.schemas import (
     ScanComparisonResponse,
 )
 
+from app.monitoring.middleware import StructuredLoggingMiddleware
+from app.monitoring.metrics import metrics
+from app.monitoring.error_tracking import setup_error_tracking
+
 # Configure structured logging
 logging.basicConfig(
     level=logging.DEBUG if DEBUG_MODE else logging.INFO,
@@ -81,10 +95,13 @@ app = FastAPI(
     version=PIPELINE_VERSION,
 )
 
-# Enable CORS
+# Structured Request Logging and Tracing Middleware (Phase 5)
+app.add_middleware(StructuredLoggingMiddleware)
+
+# Enable CORS (Locked to real origins in Phase 5)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=ALLOWED_ORIGINS if not DEBUG_MODE else ["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -105,31 +122,42 @@ def cache_scan(scan_id: str, data: Dict[str, Any]) -> None:
 
 @app.on_event("startup")
 def startup_event():
-    """Ensure MediaPipe model file is downloaded and database tables are initialized."""
+    """Ensure MediaPipe model file is downloaded, database tables are initialized, secrets verified, and error tracking setup."""
     logger.info(f"Starting AI Face Analyzer service ({PIPELINE_VERSION})")
+    if not DEBUG_MODE and JWT_SECRET_KEY == "dev-insecure-secret-key-ai-face-analyzer-phase4":
+        logger.warning("SECURITY WARNING: JWT_SECRET_KEY is using a default development secret. Set a strong random key in production!")
     init_db()
     ensure_model_downloaded()
+    setup_error_tracking()
 
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request, exc):
+    """Sanitized global exception handler to avoid leaking internal tracebacks in production."""
     import traceback
     tb = traceback.format_exc()
-    logger.error(f"Global server error: {tb}")
-    return JSONResponse(
-        status_code=500,
-        content={
+    logger.error(f"Global server error on {request.url.path}: {tb}")
+    if DEBUG_MODE:
+        content = {
             "error": "Internal Server Error",
             "message": str(exc),
             "traceback": tb
         }
+    else:
+        content = {
+            "error": "Internal Server Error",
+            "message": "An unexpected error occurred while processing your request."
+        }
+    return JSONResponse(
+        status_code=500,
+        content=content
     )
 
 
 @app.get("/health", summary="Health Check")
 @app.get("/api/health", summary="Health Check (API Prefix)", include_in_schema=False)
-def health_check():
-    """Service liveness and diagnostic check."""
+def health_check(db: Session = Depends(get_db)):
+    """Service liveness, database health, pipeline status, and LLM diagnostic check."""
     detector_status = "uninitialized"
     model_info = None
     err = None
@@ -144,11 +172,24 @@ def health_check():
         detector_status = "error"
         err = {"message": str(e), "traceback": traceback.format_exc()}
 
+    # Check Database connection
+    db_status = "connected"
+    try:
+        from sqlalchemy import text
+        db.execute(text("SELECT 1"))
+    except Exception as db_err:
+        db_status = f"error: {str(db_err)}"
+
     return {
-        "status": "ok" if detector_status == "ready" else "degraded",
+        "status": "ok" if (detector_status == "ready" and db_status == "connected") else "degraded",
         "version": PIPELINE_VERSION,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "database": db_status,
         "detector": detector_status,
         "model": model_info,
+        "system": metrics.get_system_health(),
+        "pipeline_performance": metrics.get_pipeline_timing_summary(),
+        "llm_performance": metrics.get_llm_summary(),
         "error_details": err
     }
 
@@ -156,7 +197,7 @@ def health_check():
 # ==============================================================================
 # Authentication Endpoints (Phase 4, Section 3)
 # ==============================================================================
-@app.post("/api/auth/register", response_model=TokenResponse, summary="Register New User")
+@app.post("/api/auth/register", response_model=TokenResponse, dependencies=[Depends(limit_auth_requests)], summary="Register New User")
 def register_user(req: UserRegisterRequest, db: Session = Depends(get_db)):
     """Register a new user account with email and password."""
     email = req.email.lower().strip()
@@ -194,7 +235,7 @@ def register_user(req: UserRegisterRequest, db: Session = Depends(get_db)):
     )
 
 
-@app.post("/api/auth/login", response_model=TokenResponse, summary="Log In User")
+@app.post("/api/auth/login", response_model=TokenResponse, dependencies=[Depends(limit_auth_requests)], summary="Log In User")
 def login_user(req: UserLoginRequest, db: Session = Depends(get_db)):
     """Authenticate user with email/password and issue session tokens."""
     email = req.email.lower().strip()
@@ -225,7 +266,7 @@ def login_user(req: UserLoginRequest, db: Session = Depends(get_db)):
     )
 
 
-@app.post("/api/auth/refresh", response_model=TokenResponse, summary="Refresh Session Tokens")
+@app.post("/api/auth/refresh", response_model=TokenResponse, dependencies=[Depends(limit_auth_requests)], summary="Refresh Session Tokens")
 def refresh_session(req: RefreshTokenRequest, db: Session = Depends(get_db)):
     """Validate refresh token, revoke it, and issue a rotated token pair."""
     try:
@@ -303,26 +344,24 @@ async def run_pipeline_on_image(contents: bytes, filename: str, content_type: st
     scan_id = str(uuid.uuid4())
     logger.info(f"[{scan_id}] Processing image upload: {filename} (content-type: {content_type})")
 
-    # 1. Validate MIME type
-    if content_type not in ["image/jpeg", "image/png", "image/webp", "image/jpg", "application/octet-stream"]:
-        logger.warning(f"[{scan_id}] Rejected: invalid content type {content_type}")
+    # 1. Multi-layer Upload Validation (Size, Magic Bytes Sniffing, Format Integrity)
+    try:
+        img_type, pil_img = validate_image_upload(contents, max_size_bytes=MAX_UPLOAD_SIZE_BYTES)
+    except HTTPException as he:
+        logger.warning(f"[{scan_id}] Security validation failed: {he.detail}")
+        raise he
+    except Exception as e:
+        logger.error(f"[{scan_id}] Image upload verification error: {str(e)}")
         return status.HTTP_422_UNPROCESSABLE_ENTITY, QualityRejectionSchema(
             passed=False,
-            reason="invalid_format",
-            message="Uploaded file must be a valid JPEG or PNG image."
+            reason="corrupted_image",
+            message="Could not decode image file. Please provide an uncorrupted image."
         ).model_dump(), None
 
-    # 2. Read and decode image bytes
+    # 2. Convert to RGB / BGR and handle dimension downscaling
     try:
-        if len(contents) == 0:
-            return status.HTTP_422_UNPROCESSABLE_ENTITY, QualityRejectionSchema(
-                passed=False,
-                reason="empty_file",
-                message="Uploaded file is empty."
-            ).model_dump(), None
-
-        pil_img = Image.open(io.BytesIO(contents)).convert("RGB")
-        rgb_img = np.array(pil_img)
+        pil_rgb = pil_img.convert("RGB")
+        rgb_img = np.array(pil_rgb)
         
         # Downscale internally if extremely high resolution for memory/performance protection
         h, w = rgb_img.shape[:2]
@@ -453,8 +492,33 @@ async def run_pipeline_on_image(contents: bytes, filename: str, content_type: st
         "skin_mask": skin_mask
     }
 
-    t_total = (time.perf_counter() - t_start) * 1000.0
-    logger.info(f"[{scan_id}] Analysis completed successfully in {t_total:.1f}ms (Shape: {geometry_results['shape']}, Spots: {skin_results['visible_spots']}, Rules: {triggered_ids})")
+    t_end = time.perf_counter()
+    t_det_ms = (t_gate - t_detect) * 1000.0
+    t_gate_ms = (t_geo - t_gate) * 1000.0
+    t_geo_ms = (t_skin - t_geo) * 1000.0
+    t_skin_ms = (t_rules - t_skin) * 1000.0
+    t_rules_ms = (t_llm - t_rules) * 1000.0
+    t_llm_ms = (t_end - t_llm) * 1000.0
+    t_total_ms = (t_end - t_start) * 1000.0
+
+    timings = {
+        "detect_ms": t_det_ms,
+        "quality_gate_ms": t_gate_ms,
+        "geometry_ms": t_geo_ms,
+        "skin_ms": t_skin_ms,
+        "rules_ms": t_rules_ms,
+        "llm_ms": t_llm_ms,
+        "total_ms": t_total_ms,
+    }
+    metrics.record_pipeline_timing(timings)
+
+    logger.info(
+        f"[{scan_id}] Analysis completed in {t_total_ms:.1f}ms | "
+        f"TIMINGS: detect={t_det_ms:.1f}ms | gate={t_gate_ms:.1f}ms | "
+        f"geo={t_geo_ms:.1f}ms | skin={t_skin_ms:.1f}ms | "
+        f"rules={t_rules_ms:.1f}ms | llm={t_llm_ms:.1f}ms | "
+        f"(Shape: {geometry_results['shape']}, Spots: {skin_results['visible_spots']}, Rules: {triggered_ids})"
+    )
 
     return status.HTTP_200_OK, response_payload, success_cache
 
@@ -465,6 +529,7 @@ async def run_pipeline_on_image(contents: bytes, filename: str, content_type: st
 @app.post(
     "/api/analyze",
     response_model=AnalysisResponseSchema,
+    dependencies=[Depends(limit_scan_requests)],
     responses={
         200: {"description": "Successful analysis response", "model": AnalysisResponseSchema},
         422: {"description": "Quality gate rejection", "model": QualityRejectionSchema}
@@ -474,6 +539,7 @@ async def run_pipeline_on_image(contents: bytes, filename: str, content_type: st
 @app.post(
     "/analyze",
     response_model=AnalysisResponseSchema,
+    dependencies=[Depends(limit_scan_requests)],
     include_in_schema=False
 )
 async def analyze_face(image: UploadFile = File(..., description="Selfie image file (JPEG or PNG)")):
@@ -494,6 +560,7 @@ async def analyze_face(image: UploadFile = File(..., description="Selfie image f
 @app.post(
     "/api/scans",
     response_model=AnalysisResponseSchema,
+    dependencies=[Depends(limit_scan_requests)],
     responses={
         200: {"description": "Successful analysis response", "model": AnalysisResponseSchema},
         422: {"description": "Quality gate rejection", "model": QualityRejectionSchema}

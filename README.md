@@ -15,28 +15,25 @@ present in an image — it does **not** diagnose medical conditions.
 
 | | |
 |---|---|
-| 🚀 **Current version** | `v0.4.0` — Persistence, Auth & Longitudinal Comparison |
-| 🛠️ **Stack** | Python, FastAPI, MediaPipe, OpenCV, PostgreSQL / SQLAlchemy |
-| ✅ **Status** | Active development — persistence & comparison complete, mobile client next |
+| 🚀 **Current version** | `v0.5.0` — Production Hardening, Observability & Bias Evaluation |
+| 🛠️ **Stack** | Python, FastAPI, MediaPipe, OpenCV, PostgreSQL / SQLAlchemy, Alembic |
+| ✅ **Status** | Production ready — hardened security, full observability, calibrated fairness |
 
 ---
 
-## 📸 Sample Output
+## ✨ What's New in v0.5.0
+ 
+Building on the persistence and comparison capabilities from v0.4.0, this release hardens the service for production reliability, security, observability, and empirical skin-tone fairness:
 
-A live scan through the full pipeline — image quality gate, facial
-geometry via 478 MediaPipe landmarks, classical OpenCV skin heuristics,
-and the rules-gated LLM explanation layer.
-
-Each recommendation card shows the deterministic rule ID that triggered
-it (e.g. `REDNESS_MODERATE`) alongside the LLM's plain-language
-explanation — generated only from that approved observation, never
-invented independently.
-
-> ⚕️ Sample scores shown are from a test image and are for
-> demonstration purposes only — this analysis reflects visible
-> characteristics, not a medical diagnosis.
-<img width="1920" height="1080" alt="Screenshot 2026-08-24 235130" src="https://github.com/user-attachments/assets/556bfa12-b59a-4719-9e68-7c08c8dcc340" />
-<img width="1920" height="1080" alt="Screenshot 2026-08-24 235140" src="https://github.com/user-attachments/assets/7d5b9a76-6862-4b20-abd9-2f3483859ca4" />
+- 🔒 **Rate Limiting Engine** — In-memory sliding-window throttling per IP / authenticated client. Auth endpoints (`/api/auth/*`) are throttled at **5 req/min** (mitigating brute force), while compute/LLM-heavy scan endpoints (`/api/scans`, `/api/analyze`) are throttled at **10 req/min** with standard `HTTP 429` and `Retry-After` headers.
+- 🛡️ **Multi-Layer Upload Validation & Magic Byte Sniffing** — Replaced extension/MIME header trust with true binary magic byte inspection (`\xFF\xD8\xFF` JPEG, `\x89PNG\r\n\x1a\n` PNG, `RIFF...WEBP` WebP). Enforces strict 10MB payload bounds and decompression bomb protections.
+- 🌐 **CORS & Secrets Hardening** — Locked CORS origins to configured production and development domains (`ALLOWED_ORIGINS`). Ensured all credentials (`JWT_SECRET_KEY`, `GEMINI_API_KEY`, `DATABASE_URL`) are strictly loaded from environment variables with sanitized production error responses.
+- ⏱️ **Structured Request Tracing & Per-Stage Pipeline Profiling** — Every request is injected with a unique `X-Request-ID`. Analysis executions record microsecond-accurate timing across all 6 pipeline stages (`detect_ms`, `quality_gate_ms`, `geometry_ms`, `skin_ms`, `rules_ms`, `llm_ms`, `total_ms`).
+- 📊 **LLM Observability & Error Tracking** — Aggregates LLM call success rates, fallback-template triggers, and average latency. Integrated `sentry-sdk` support for cloud exception monitoring with zero-PII guards.
+- 🩺 **Comprehensive Health & Readiness Probes** — Upgraded `GET /health` with live PostgreSQL/SQLite database probes, MediaPipe model validation, uptime tracking, and rolling performance averages.
+- ⚖️ **Empirical Bias Evaluation & Fairness Calibration** — Built an automated 24-sample evaluation dataset across Fitzpatrick tones (I–VI), lighting casts, and face shapes. Calibrated pigmentation variance using luminance-relative normalization ($CV_{L^*}$), eliminating false positive skew on fair skin while maintaining sensitivity across deep complexions.
+- 🗃️ **Alembic Database Migrations & Operations Guide** — Added declarative Alembic migration tooling (`alembic upgrade head`), cross-dialect JSONB/JSON parity, and documented backup/rollback workflows in [`docs/deployment.md`](docs/deployment.md).
+- 🧪 **Zero Vulnerabilities & 69 Tests Passing** — Clean `pip-audit` dependency audit and 100% test pass rate across unit, auth, security, and monitoring suites.
 
 ---
 
@@ -287,11 +284,13 @@ Full Pydantic schemas are defined in [`app/schemas.py`](app/schemas.py).
  
 ---
  
-## ⚠️ Known Limitations
+## ⚠️ Known Limitations & Empirical Findings (v0.5.0 Evaluation)
  
-- 💡 Warm/incandescent lighting can skew redness detection (CIELAB `a*` channel); results are most consistent under neutral daylight. The comparison engine automatically warns if two scans were taken under disparate lighting.
-- 🧔 Heavy facial hair or low bangs can compress geometry ratio estimates by obscuring chin/hairline landmarks.
-- 🌓 Under-eye contrast detection is currently less reliable on very dark skin tones — calibration thresholds are configurable in `config.py`.
+- 💡 **Illuminant Color Constancy Sensitivity** — Analysis assumes balanced natural daylight (5000K–5500K). Warm incandescent (2700K) bulbs inflate CIELAB $a^*$ redness scores (up to $0.99$, mimicking erythema), while cool fluorescent (6500K) lighting suppresses redness ($0.00$). The longitudinal comparison engine automatically detects and warns if two scans were captured under disparate lighting conditions.
+- 📐 **2D Face Shape Discretization** — In single 2D frontal selfies without 3D jaw angle depth sensors, morphology estimates cluster into broad 2D aspect ratio archetypes (primarily `round` for face ratios $< 1.35$ and `rectangle` for $> 1.40$).
+- 🧔 **Facial Hair & Hairlines** — Heavy beards, thick stubble, or low bangs obscure chin and forehead landmark contours, compressing estimated vertical face and jaw ratios.
+- 🌓 **Periorbital Contrast Sensitivity** — Under-eye shade detection evaluates local luminance deficits relative to adjacent cheek zones; extreme top-down directional lighting or heavy brow bone shadows can elevate under-eye contrast scores.
+- 🎨 **Skin Tone Pigmentation Calibration** — Evaluated across the 6-tier Fitzpatrick scale (I–VI). In v0.5.0, pigmentation variance uses luminance-relative coefficient of variation ($CV_{L^*}$), maintaining equity across light and deep complexions ($0.12\text{--}0.25$ baseline range). However, severe low-light underexposure ($L^* < 30$) can dampen high-frequency gradient edge detection.
  
 ---
  
@@ -302,12 +301,24 @@ Full Pydantic schemas are defined in [`app/schemas.py`](app/schemas.py).
 - [x] 🧩 Recommendation rules engine + LLM explanation layer
 - [x] 🗄️ Persistent scan history & longitudinal comparison
 - [x] 🔐 Authentication & multi-user support (Zero-image retention)
+- [x] 🏭 Production hardening, rate limiting, observability & empirical bias evaluation (v0.5.0)
 - [ ] 📱 Flutter mobile client
-- [ ] 🏭 Production hardening & bias evaluation across broader skin-tone and lighting datasets
+- [ ] 🌐 Client-side automatic Gray World white-balance pre-processing
  
 ---
  
 ## 📝 Changelog
+ 
+### v0.5.0
+- 🔒 Added sliding-window rate limiting on Auth (5 req/min) and Scan (10 req/min) endpoints with standard `HTTP 429` retry headers.
+- 🛡️ Hardened file upload validation with binary magic byte sniffing (JPEG, PNG, WebP) and strict 10MB limits.
+- 🌐 Locked CORS configuration to explicitly allowed origins and sanitized production exception tracebacks.
+- ⏱️ Added structured request tracing (`X-Request-ID`) and per-stage pipeline timing telemetry (`detect`, `gate`, `geo`, `skin`, `rules`, `llm`).
+- 📊 Wired LLM observability metrics (success count, fallback rate, latency tracking) and optional Sentry error tracking integration.
+- 🩺 Upgraded `/health` probe with live PostgreSQL/SQLite DB connectivity checks and system telemetry.
+- ⚖️ Built a 24-sample synthetic evaluation set across Fitzpatrick I–VI tones; calibrated pigmentation metric for skin tone fairness.
+- 🗃️ Added Alembic database migration tooling (`alembic upgrade head`) and created `docs/deployment.md`.
+- 🧪 Expanded automated test suite to 69 tests across security, monitoring, auth, pipeline, and rules.
  
 ### v0.4.0
 - 🔐 Added user authentication with bcrypt, JWT access tokens, and DB-backed refresh token rotation with immediate reuse revocation.

@@ -66,6 +66,11 @@ class TestScansPersistenceAndSecurity(unittest.TestCase):
         app.dependency_overrides[get_db] = override_get_db
         cls.client = TestClient(app)
 
+    def setUp(self):
+        from app.security.rate_limiter import auth_limiter, scan_limiter
+        auth_limiter.reset()
+        scan_limiter.reset()
+
     @classmethod
     def tearDownClass(cls):
         Base.metadata.drop_all(bind=test_engine)

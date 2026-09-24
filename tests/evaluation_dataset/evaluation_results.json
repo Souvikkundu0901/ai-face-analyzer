@@ -1,0 +1,1090 @@
+[
+  {
+    "id": "fitz_1_fair_pale",
+    "filename": "fitz_1_fair_pale.jpg",
+    "path": "C:\\Users\\Souvik\\OneDrive\\Desktop\\Programms\\AI face\\tests\\evaluation_dataset\\fitz_1_fair_pale.jpg",
+    "cohort": "skin_tone_spectrum",
+    "label": "Fitzpatrick I (Pale/Fair)",
+    "fitzpatrick_group": "I",
+    "lighting_condition": "balanced",
+    "passed_gate": true,
+    "quality_metrics": {
+      "score": 0.908,
+      "lighting": 0.922,
+      "sharpness": 1.0,
+      "pose": 0.784,
+      "passed": true
+    },
+    "warnings": [],
+    "face_shape": "round",
+    "face_symmetry": 0.949,
+    "face_ratios": {
+      "jaw_width_to_face_width": 0.89,
+      "forehead_width_to_face_width": 0.72,
+      "eye_distance_to_face_width": 0.51,
+      "nose_width_to_face_width": 0.35,
+      "lip_width_to_face_width": 0.46
+    },
+    "skin_scores": {
+      "redness": 0.41,
+      "pigmentation": 0.12,
+      "texture": 0.1,
+      "under_eye": 0.0,
+      "visible_spots": 1
+    },
+    "triggered_rules": [
+      "REDNESS_MODERATE"
+    ],
+    "timings": {
+      "detect_ms": 13.7,
+      "gate_ms": 11.0,
+      "geometry_ms": 0.1,
+      "skin_ms": 101.2,
+      "rules_ms": 0.0,
+      "total_ms": 126.0
+    }
+  },
+  {
+    "id": "fitz_2_fair_rosy",
+    "filename": "fitz_2_fair_rosy.jpg",
+    "path": "C:\\Users\\Souvik\\OneDrive\\Desktop\\Programms\\AI face\\tests\\evaluation_dataset\\fitz_2_fair_rosy.jpg",
+    "cohort": "skin_tone_spectrum",
+    "label": "Fitzpatrick II (Fair Rosy)",
+    "fitzpatrick_group": "II",
+    "lighting_condition": "balanced",
+    "passed_gate": true,
+    "quality_metrics": {
+      "score": 0.915,
+      "lighting": 0.933,
+      "sharpness": 1.0,
+      "pose": 0.796,
+      "passed": true
+    },
+    "warnings": [],
+    "face_shape": "round",
+    "face_symmetry": 0.953,
+    "face_ratios": {
+      "jaw_width_to_face_width": 0.89,
+      "forehead_width_to_face_width": 0.72,
+      "eye_distance_to_face_width": 0.51,
+      "nose_width_to_face_width": 0.35,
+      "lip_width_to_face_width": 0.46
+    },
+    "skin_scores": {
+      "redness": 0.55,
+      "pigmentation": 0.17,
+      "texture": 0.1,
+      "under_eye": 0.0,
+      "visible_spots": 0
+    },
+    "triggered_rules": [
+      "REDNESS_MODERATE"
+    ],
+    "timings": {
+      "detect_ms": 27.3,
+      "gate_ms": 13.3,
+      "geometry_ms": 0.1,
+      "skin_ms": 103.9,
+      "rules_ms": 0.0,
+      "total_ms": 144.6
+    }
+  },
+  {
+    "id": "fitz_3_medium_warm",
+    "filename": "fitz_3_medium_warm.jpg",
+    "path": "C:\\Users\\Souvik\\OneDrive\\Desktop\\Programms\\AI face\\tests\\evaluation_dataset\\fitz_3_medium_warm.jpg",
+    "cohort": "skin_tone_spectrum",
+    "label": "Fitzpatrick III (Medium Warm)",
+    "fitzpatrick_group": "III",
+    "lighting_condition": "balanced",
+    "passed_gate": true,
+    "quality_metrics": {
+      "score": 0.917,
+      "lighting": 0.945,
+      "sharpness": 1.0,
+      "pose": 0.788,
+      "passed": true
+    },
+    "warnings": [],
+    "face_shape": "round",
+    "face_symmetry": 0.947,
+    "face_ratios": {
+      "jaw_width_to_face_width": 0.89,
+      "forehead_width_to_face_width": 0.73,
+      "eye_distance_to_face_width": 0.51,
+      "nose_width_to_face_width": 0.35,
+      "lip_width_to_face_width": 0.47
+    },
+    "skin_scores": {
+      "redness": 0.44,
+      "pigmentation": 0.21,
+      "texture": 0.08,
+      "under_eye": 0.0,
+      "visible_spots": 1
+    },
+    "triggered_rules": [
+      "REDNESS_MODERATE"
+    ],
+    "timings": {
+      "detect_ms": 14.7,
+      "gate_ms": 9.6,
+      "geometry_ms": 0.1,
+      "skin_ms": 80.5,
+      "rules_ms": 0.0,
+      "total_ms": 104.8
+    }
+  },
+  {
+    "id": "fitz_4_olive_tan",
+    "filename": "fitz_4_olive_tan.jpg",
+    "path": "C:\\Users\\Souvik\\OneDrive\\Desktop\\Programms\\AI face\\tests\\evaluation_dataset\\fitz_4_olive_tan.jpg",
+    "cohort": "skin_tone_spectrum",
+    "label": "Fitzpatrick IV (Olive/Tan)",
+    "fitzpatrick_group": "IV",
+    "lighting_condition": "balanced",
+    "passed_gate": true,
+    "quality_metrics": {
+      "score": 0.919,
+      "lighting": 0.958,
+      "sharpness": 1.0,
+      "pose": 0.779,
+      "passed": true
+    },
+    "warnings": [],
+    "face_shape": "round",
+    "face_symmetry": 0.948,
+    "face_ratios": {
+      "jaw_width_to_face_width": 0.89,
+      "forehead_width_to_face_width": 0.73,
+      "eye_distance_to_face_width": 0.51,
+      "nose_width_to_face_width": 0.35,
+      "lip_width_to_face_width": 0.47
+    },
+    "skin_scores": {
+      "redness": 0.47,
+      "pigmentation": 0.21,
+      "texture": 0.03,
+      "under_eye": 0.0,
+      "visible_spots": 0
+    },
+    "triggered_rules": [
+      "REDNESS_MODERATE"
+    ],
+    "timings": {
+      "detect_ms": 11.2,
+      "gate_ms": 10.2,
+      "geometry_ms": 0.1,
+      "skin_ms": 80.8,
+      "rules_ms": 0.0,
+      "total_ms": 102.2
+    }
+  },
+  {
+    "id": "fitz_5_brown_deep",
+    "filename": "fitz_5_brown_deep.jpg",
+    "path": "C:\\Users\\Souvik\\OneDrive\\Desktop\\Programms\\AI face\\tests\\evaluation_dataset\\fitz_5_brown_deep.jpg",
+    "cohort": "skin_tone_spectrum",
+    "label": "Fitzpatrick V (Rich Brown)",
+    "fitzpatrick_group": "V",
+    "lighting_condition": "balanced",
+    "passed_gate": true,
+    "quality_metrics": {
+      "score": 0.926,
+      "lighting": 0.981,
+      "sharpness": 1.0,
+      "pose": 0.777,
+      "passed": true
+    },
+    "warnings": [],
+    "face_shape": "round",
+    "face_symmetry": 0.953,
+    "face_ratios": {
+      "jaw_width_to_face_width": 0.9,
+      "forehead_width_to_face_width": 0.74,
+      "eye_distance_to_face_width": 0.51,
+      "nose_width_to_face_width": 0.34,
+      "lip_width_to_face_width": 0.49
+    },
+    "skin_scores": {
+      "redness": 0.49,
+      "pigmentation": 0.22,
+      "texture": 0.0,
+      "under_eye": 0.0,
+      "visible_spots": 0
+    },
+    "triggered_rules": [
+      "REDNESS_MODERATE"
+    ],
+    "timings": {
+      "detect_ms": 22.0,
+      "gate_ms": 15.3,
+      "geometry_ms": 0.1,
+      "skin_ms": 91.8,
+      "rules_ms": 0.0,
+      "total_ms": 129.2
+    }
+  },
+  {
+    "id": "fitz_6_dark_ebony",
+    "filename": "fitz_6_dark_ebony.jpg",
+    "path": "C:\\Users\\Souvik\\OneDrive\\Desktop\\Programms\\AI face\\tests\\evaluation_dataset\\fitz_6_dark_ebony.jpg",
+    "cohort": "skin_tone_spectrum",
+    "label": "Fitzpatrick VI (Deep Ebony)",
+    "fitzpatrick_group": "VI",
+    "lighting_condition": "balanced",
+    "passed_gate": true,
+    "quality_metrics": {
+      "score": 0.932,
+      "lighting": 0.995,
+      "sharpness": 1.0,
+      "pose": 0.78,
+      "passed": true
+    },
+    "warnings": [],
+    "face_shape": "round",
+    "face_symmetry": 0.946,
+    "face_ratios": {
+      "jaw_width_to_face_width": 0.9,
+      "forehead_width_to_face_width": 0.73,
+      "eye_distance_to_face_width": 0.51,
+      "nose_width_to_face_width": 0.33,
+      "lip_width_to_face_width": 0.48
+    },
+    "skin_scores": {
+      "redness": 0.44,
+      "pigmentation": 0.25,
+      "texture": 0.0,
+      "under_eye": 0.0,
+      "visible_spots": 0
+    },
+    "triggered_rules": [
+      "REDNESS_MODERATE"
+    ],
+    "timings": {
+      "detect_ms": 17.7,
+      "gate_ms": 15.2,
+      "geometry_ms": 0.1,
+      "skin_ms": 90.1,
+      "rules_ms": 0.0,
+      "total_ms": 123.1
+    }
+  },
+  {
+    "id": "light_balanced_5500k",
+    "filename": "light_balanced_5500k.jpg",
+    "path": "C:\\Users\\Souvik\\OneDrive\\Desktop\\Programms\\AI face\\tests\\evaluation_dataset\\light_balanced_5500k.jpg",
+    "cohort": "lighting_variation",
+    "label": "Balanced 5500K Studio",
+    "fitzpatrick_group": "II/III",
+    "lighting_condition": "optimal",
+    "passed_gate": true,
+    "quality_metrics": {
+      "score": 0.918,
+      "lighting": 0.947,
+      "sharpness": 1.0,
+      "pose": 0.79,
+      "passed": true
+    },
+    "warnings": [],
+    "face_shape": "round",
+    "face_symmetry": 0.951,
+    "face_ratios": {
+      "jaw_width_to_face_width": 0.88,
+      "forehead_width_to_face_width": 0.73,
+      "eye_distance_to_face_width": 0.51,
+      "nose_width_to_face_width": 0.34,
+      "lip_width_to_face_width": 0.47
+    },
+    "skin_scores": {
+      "redness": 0.37,
+      "pigmentation": 0.22,
+      "texture": 0.08,
+      "under_eye": 0.0,
+      "visible_spots": 1
+    },
+    "triggered_rules": [
+      "ALL_CLEAR"
+    ],
+    "timings": {
+      "detect_ms": 21.2,
+      "gate_ms": 15.2,
+      "geometry_ms": 0.1,
+      "skin_ms": 181.4,
+      "rules_ms": 0.0,
+      "total_ms": 218.0
+    }
+  },
+  {
+    "id": "light_warm_tungsten",
+    "filename": "light_warm_tungsten.jpg",
+    "path": "C:\\Users\\Souvik\\OneDrive\\Desktop\\Programms\\AI face\\tests\\evaluation_dataset\\light_warm_tungsten.jpg",
+    "cohort": "lighting_variation",
+    "label": "Warm Tungsten (2700K)",
+    "fitzpatrick_group": "II/III",
+    "lighting_condition": "warm",
+    "passed_gate": true,
+    "quality_metrics": {
+      "score": 0.915,
+      "lighting": 0.933,
+      "sharpness": 1.0,
+      "pose": 0.794,
+      "passed": true
+    },
+    "warnings": [],
+    "face_shape": "round",
+    "face_symmetry": 0.951,
+    "face_ratios": {
+      "jaw_width_to_face_width": 0.89,
+      "forehead_width_to_face_width": 0.72,
+      "eye_distance_to_face_width": 0.51,
+      "nose_width_to_face_width": 0.35,
+      "lip_width_to_face_width": 0.47
+    },
+    "skin_scores": {
+      "redness": 0.99,
+      "pigmentation": 0.12,
+      "texture": 0.05,
+      "under_eye": 0.0,
+      "visible_spots": 0
+    },
+    "triggered_rules": [
+      "REDNESS_HIGH"
+    ],
+    "timings": {
+      "detect_ms": 32.3,
+      "gate_ms": 17.4,
+      "geometry_ms": 0.1,
+      "skin_ms": 232.4,
+      "rules_ms": 0.0,
+      "total_ms": 282.3
+    }
+  },
+  {
+    "id": "light_cool_fluorescent",
+    "filename": "light_cool_fluorescent.jpg",
+    "path": "C:\\Users\\Souvik\\OneDrive\\Desktop\\Programms\\AI face\\tests\\evaluation_dataset\\light_cool_fluorescent.jpg",
+    "cohort": "lighting_variation",
+    "label": "Cool Fluorescent (6500K)",
+    "fitzpatrick_group": "II/III",
+    "lighting_condition": "cool",
+    "passed_gate": true,
+    "quality_metrics": {
+      "score": 0.918,
+      "lighting": 0.946,
+      "sharpness": 1.0,
+      "pose": 0.79,
+      "passed": true
+    },
+    "warnings": [],
+    "face_shape": "round",
+    "face_symmetry": 0.948,
+    "face_ratios": {
+      "jaw_width_to_face_width": 0.88,
+      "forehead_width_to_face_width": 0.73,
+      "eye_distance_to_face_width": 0.51,
+      "nose_width_to_face_width": 0.34,
+      "lip_width_to_face_width": 0.46
+    },
+    "skin_scores": {
+      "redness": 0.0,
+      "pigmentation": 0.26,
+      "texture": 0.08,
+      "under_eye": 0.0,
+      "visible_spots": 1
+    },
+    "triggered_rules": [
+      "ALL_CLEAR"
+    ],
+    "timings": {
+      "detect_ms": 25.8,
+      "gate_ms": 13.1,
+      "geometry_ms": 0.2,
+      "skin_ms": 226.5,
+      "rules_ms": 0.0,
+      "total_ms": 265.6
+    }
+  },
+  {
+    "id": "light_low_exposure",
+    "filename": "light_low_exposure.jpg",
+    "path": "C:\\Users\\Souvik\\OneDrive\\Desktop\\Programms\\AI face\\tests\\evaluation_dataset\\light_low_exposure.jpg",
+    "cohort": "lighting_variation",
+    "label": "Low Exposure (Dim Room)",
+    "fitzpatrick_group": "II/III",
+    "lighting_condition": "low_light",
+    "passed_gate": true,
+    "quality_metrics": {
+      "score": 0.607,
+      "lighting": 0.444,
+      "sharpness": 0.609,
+      "pose": 0.795,
+      "passed": true
+    },
+    "warnings": [
+      "Mild uneven lighting detected."
+    ],
+    "face_shape": "round",
+    "face_symmetry": 0.945,
+    "face_ratios": {
+      "jaw_width_to_face_width": 0.89,
+      "forehead_width_to_face_width": 0.73,
+      "eye_distance_to_face_width": 0.51,
+      "nose_width_to_face_width": 0.34,
+      "lip_width_to_face_width": 0.48
+    },
+    "skin_scores": {
+      "redness": 0.19,
+      "pigmentation": 0.59,
+      "texture": 0.0,
+      "under_eye": 0.0,
+      "visible_spots": 0
+    },
+    "triggered_rules": [
+      "PIGMENTATION_VARIATION"
+    ],
+    "timings": {
+      "detect_ms": 43.2,
+      "gate_ms": 20.2,
+      "geometry_ms": 0.2,
+      "skin_ms": 221.7,
+      "rules_ms": 0.0,
+      "total_ms": 285.3
+    }
+  },
+  {
+    "id": "light_high_exposure",
+    "filename": "light_high_exposure.jpg",
+    "path": "C:\\Users\\Souvik\\OneDrive\\Desktop\\Programms\\AI face\\tests\\evaluation_dataset\\light_high_exposure.jpg",
+    "cohort": "lighting_variation",
+    "label": "High Exposure (Direct Sunlight)",
+    "fitzpatrick_group": "II/III",
+    "lighting_condition": "bright",
+    "passed_gate": true,
+    "quality_metrics": {
+      "score": 0.739,
+      "lighting": 0.443,
+      "sharpness": 1.0,
+      "pose": 0.781,
+      "passed": true
+    },
+    "warnings": [
+      "Mild uneven lighting detected."
+    ],
+    "face_shape": "round",
+    "face_symmetry": 0.948,
+    "face_ratios": {
+      "jaw_width_to_face_width": 0.89,
+      "forehead_width_to_face_width": 0.73,
+      "eye_distance_to_face_width": 0.51,
+      "nose_width_to_face_width": 0.34,
+      "lip_width_to_face_width": 0.46
+    },
+    "skin_scores": {
+      "redness": 0.11,
+      "pigmentation": 0.0,
+      "texture": 0.03,
+      "under_eye": 0.0,
+      "visible_spots": 1
+    },
+    "triggered_rules": [
+      "ALL_CLEAR"
+    ],
+    "timings": {
+      "detect_ms": 35.4,
+      "gate_ms": 18.4,
+      "geometry_ms": 0.2,
+      "skin_ms": 251.4,
+      "rules_ms": 0.0,
+      "total_ms": 305.5
+    }
+  },
+  {
+    "id": "light_directional_shadow",
+    "filename": "light_directional_shadow.jpg",
+    "path": "C:\\Users\\Souvik\\OneDrive\\Desktop\\Programms\\AI face\\tests\\evaluation_dataset\\light_directional_shadow.jpg",
+    "cohort": "lighting_variation",
+    "label": "Directional Side Lighting",
+    "fitzpatrick_group": "II/III",
+    "lighting_condition": "shadowed",
+    "passed_gate": true,
+    "quality_metrics": {
+      "score": 0.895,
+      "lighting": 0.876,
+      "sharpness": 1.0,
+      "pose": 0.794,
+      "passed": true
+    },
+    "warnings": [],
+    "face_shape": "round",
+    "face_symmetry": 0.947,
+    "face_ratios": {
+      "jaw_width_to_face_width": 0.88,
+      "forehead_width_to_face_width": 0.73,
+      "eye_distance_to_face_width": 0.51,
+      "nose_width_to_face_width": 0.35,
+      "lip_width_to_face_width": 0.46
+    },
+    "skin_scores": {
+      "redness": 0.3,
+      "pigmentation": 0.39,
+      "texture": 0.04,
+      "under_eye": 0.0,
+      "visible_spots": 0
+    },
+    "triggered_rules": [
+      "ALL_CLEAR"
+    ],
+    "timings": {
+      "detect_ms": 37.1,
+      "gate_ms": 21.3,
+      "geometry_ms": 0.3,
+      "skin_ms": 235.6,
+      "rules_ms": 0.0,
+      "total_ms": 294.2
+    }
+  },
+  {
+    "id": "shape_oval_ref",
+    "filename": "shape_oval_ref.jpg",
+    "path": "C:\\Users\\Souvik\\OneDrive\\Desktop\\Programms\\AI face\\tests\\evaluation_dataset\\shape_oval_ref.jpg",
+    "cohort": "facial_geometry",
+    "label": "Oval Morphology",
+    "fitzpatrick_group": "II/III",
+    "lighting_condition": "balanced",
+    "passed_gate": true,
+    "quality_metrics": {
+      "score": 0.918,
+      "lighting": 0.947,
+      "sharpness": 1.0,
+      "pose": 0.79,
+      "passed": true
+    },
+    "warnings": [],
+    "face_shape": "round",
+    "face_symmetry": 0.951,
+    "face_ratios": {
+      "jaw_width_to_face_width": 0.88,
+      "forehead_width_to_face_width": 0.73,
+      "eye_distance_to_face_width": 0.51,
+      "nose_width_to_face_width": 0.34,
+      "lip_width_to_face_width": 0.47
+    },
+    "skin_scores": {
+      "redness": 0.37,
+      "pigmentation": 0.22,
+      "texture": 0.08,
+      "under_eye": 0.0,
+      "visible_spots": 1
+    },
+    "triggered_rules": [
+      "ALL_CLEAR"
+    ],
+    "timings": {
+      "detect_ms": 31.3,
+      "gate_ms": 17.2,
+      "geometry_ms": 0.2,
+      "skin_ms": 289.9,
+      "rules_ms": 0.0,
+      "total_ms": 338.5
+    }
+  },
+  {
+    "id": "shape_round_wide",
+    "filename": "shape_round_wide.jpg",
+    "path": "C:\\Users\\Souvik\\OneDrive\\Desktop\\Programms\\AI face\\tests\\evaluation_dataset\\shape_round_wide.jpg",
+    "cohort": "facial_geometry",
+    "label": "Round Morphology (Wider Cheekbones)",
+    "fitzpatrick_group": "II/III",
+    "lighting_condition": "balanced",
+    "passed_gate": true,
+    "quality_metrics": {
+      "score": 0.91,
+      "lighting": 0.921,
+      "sharpness": 1.0,
+      "pose": 0.791,
+      "passed": true
+    },
+    "warnings": [],
+    "face_shape": "round",
+    "face_symmetry": 0.952,
+    "face_ratios": {
+      "jaw_width_to_face_width": 0.89,
+      "forehead_width_to_face_width": 0.74,
+      "eye_distance_to_face_width": 0.51,
+      "nose_width_to_face_width": 0.34,
+      "lip_width_to_face_width": 0.47
+    },
+    "skin_scores": {
+      "redness": 0.37,
+      "pigmentation": 0.24,
+      "texture": 0.07,
+      "under_eye": 0.0,
+      "visible_spots": 1
+    },
+    "triggered_rules": [
+      "ALL_CLEAR"
+    ],
+    "timings": {
+      "detect_ms": 41.0,
+      "gate_ms": 18.3,
+      "geometry_ms": 0.1,
+      "skin_ms": 234.8,
+      "rules_ms": 0.0,
+      "total_ms": 294.3
+    }
+  },
+  {
+    "id": "shape_square_jaw",
+    "filename": "shape_square_jaw.jpg",
+    "path": "C:\\Users\\Souvik\\OneDrive\\Desktop\\Programms\\AI face\\tests\\evaluation_dataset\\shape_square_jaw.jpg",
+    "cohort": "facial_geometry",
+    "label": "Square Morphology (Prominent Jaw)",
+    "fitzpatrick_group": "II/III",
+    "lighting_condition": "balanced",
+    "passed_gate": true,
+    "quality_metrics": {
+      "score": 0.916,
+      "lighting": 0.941,
+      "sharpness": 1.0,
+      "pose": 0.79,
+      "passed": true
+    },
+    "warnings": [],
+    "face_shape": "round",
+    "face_symmetry": 0.951,
+    "face_ratios": {
+      "jaw_width_to_face_width": 0.89,
+      "forehead_width_to_face_width": 0.74,
+      "eye_distance_to_face_width": 0.51,
+      "nose_width_to_face_width": 0.34,
+      "lip_width_to_face_width": 0.48
+    },
+    "skin_scores": {
+      "redness": 0.37,
+      "pigmentation": 0.24,
+      "texture": 0.06,
+      "under_eye": 0.0,
+      "visible_spots": 0
+    },
+    "triggered_rules": [
+      "ALL_CLEAR"
+    ],
+    "timings": {
+      "detect_ms": 46.7,
+      "gate_ms": 25.0,
+      "geometry_ms": 0.3,
+      "skin_ms": 231.0,
+      "rules_ms": 0.0,
+      "total_ms": 303.1
+    }
+  },
+  {
+    "id": "shape_heart_taper",
+    "filename": "shape_heart_taper.jpg",
+    "path": "C:\\Users\\Souvik\\OneDrive\\Desktop\\Programms\\AI face\\tests\\evaluation_dataset\\shape_heart_taper.jpg",
+    "cohort": "facial_geometry",
+    "label": "Heart Morphology (Narrower Chin)",
+    "fitzpatrick_group": "II/III",
+    "lighting_condition": "balanced",
+    "passed_gate": true,
+    "quality_metrics": {
+      "score": 0.917,
+      "lighting": 0.945,
+      "sharpness": 1.0,
+      "pose": 0.787,
+      "passed": true
+    },
+    "warnings": [],
+    "face_shape": "rectangle",
+    "face_symmetry": 0.959,
+    "face_ratios": {
+      "jaw_width_to_face_width": 0.89,
+      "forehead_width_to_face_width": 0.72,
+      "eye_distance_to_face_width": 0.5,
+      "nose_width_to_face_width": 0.35,
+      "lip_width_to_face_width": 0.46
+    },
+    "skin_scores": {
+      "redness": 0.37,
+      "pigmentation": 0.24,
+      "texture": 0.08,
+      "under_eye": 0.0,
+      "visible_spots": 1
+    },
+    "triggered_rules": [
+      "ALL_CLEAR"
+    ],
+    "timings": {
+      "detect_ms": 27.4,
+      "gate_ms": 15.2,
+      "geometry_ms": 0.1,
+      "skin_ms": 208.7,
+      "rules_ms": 0.0,
+      "total_ms": 251.4
+    }
+  },
+  {
+    "id": "shape_diamond_narrow",
+    "filename": "shape_diamond_narrow.jpg",
+    "path": "C:\\Users\\Souvik\\OneDrive\\Desktop\\Programms\\AI face\\tests\\evaluation_dataset\\shape_diamond_narrow.jpg",
+    "cohort": "facial_geometry",
+    "label": "Diamond Morphology (Prominent Zygoma)",
+    "fitzpatrick_group": "II/III",
+    "lighting_condition": "balanced",
+    "passed_gate": true,
+    "quality_metrics": {
+      "score": 0.918,
+      "lighting": 0.962,
+      "sharpness": 1.0,
+      "pose": 0.772,
+      "passed": true
+    },
+    "warnings": [],
+    "face_shape": "rectangle",
+    "face_symmetry": 0.94,
+    "face_ratios": {
+      "jaw_width_to_face_width": 0.88,
+      "forehead_width_to_face_width": 0.72,
+      "eye_distance_to_face_width": 0.49,
+      "nose_width_to_face_width": 0.34,
+      "lip_width_to_face_width": 0.44
+    },
+    "skin_scores": {
+      "redness": 0.37,
+      "pigmentation": 0.28,
+      "texture": 0.08,
+      "under_eye": 0.0,
+      "visible_spots": 1
+    },
+    "triggered_rules": [
+      "ALL_CLEAR"
+    ],
+    "timings": {
+      "detect_ms": 40.9,
+      "gate_ms": 17.1,
+      "geometry_ms": 0.2,
+      "skin_ms": 264.0,
+      "rules_ms": 0.0,
+      "total_ms": 322.3
+    }
+  },
+  {
+    "id": "shape_rectangle_long",
+    "filename": "shape_rectangle_long.jpg",
+    "path": "C:\\Users\\Souvik\\OneDrive\\Desktop\\Programms\\AI face\\tests\\evaluation_dataset\\shape_rectangle_long.jpg",
+    "cohort": "facial_geometry",
+    "label": "Rectangle Morphology (Elongated Vertical)",
+    "fitzpatrick_group": "II/III",
+    "lighting_condition": "balanced",
+    "passed_gate": true,
+    "quality_metrics": {
+      "score": 0.895,
+      "lighting": 0.912,
+      "sharpness": 1.0,
+      "pose": 0.753,
+      "passed": true
+    },
+    "warnings": [],
+    "face_shape": "rectangle",
+    "face_symmetry": 0.919,
+    "face_ratios": {
+      "jaw_width_to_face_width": 0.89,
+      "forehead_width_to_face_width": 0.65,
+      "eye_distance_to_face_width": 0.49,
+      "nose_width_to_face_width": 0.34,
+      "lip_width_to_face_width": 0.42
+    },
+    "skin_scores": {
+      "redness": 0.37,
+      "pigmentation": 0.37,
+      "texture": 0.08,
+      "under_eye": 0.01,
+      "visible_spots": 0
+    },
+    "triggered_rules": [
+      "ALL_CLEAR"
+    ],
+    "timings": {
+      "detect_ms": 32.3,
+      "gate_ms": 13.8,
+      "geometry_ms": 0.2,
+      "skin_ms": 207.7,
+      "rules_ms": 0.0,
+      "total_ms": 253.9
+    }
+  },
+  {
+    "id": "cond_clear_optimal",
+    "filename": "cond_clear_optimal.jpg",
+    "path": "C:\\Users\\Souvik\\OneDrive\\Desktop\\Programms\\AI face\\tests\\evaluation_dataset\\cond_clear_optimal.jpg",
+    "cohort": "skin_conditions",
+    "label": "Clear & Smooth Baseline",
+    "fitzpatrick_group": "II/III",
+    "lighting_condition": "balanced",
+    "passed_gate": true,
+    "quality_metrics": {
+      "score": 0.918,
+      "lighting": 0.947,
+      "sharpness": 1.0,
+      "pose": 0.79,
+      "passed": true
+    },
+    "warnings": [],
+    "face_shape": "round",
+    "face_symmetry": 0.951,
+    "face_ratios": {
+      "jaw_width_to_face_width": 0.88,
+      "forehead_width_to_face_width": 0.73,
+      "eye_distance_to_face_width": 0.51,
+      "nose_width_to_face_width": 0.34,
+      "lip_width_to_face_width": 0.47
+    },
+    "skin_scores": {
+      "redness": 0.37,
+      "pigmentation": 0.22,
+      "texture": 0.08,
+      "under_eye": 0.0,
+      "visible_spots": 1
+    },
+    "triggered_rules": [
+      "ALL_CLEAR"
+    ],
+    "timings": {
+      "detect_ms": 32.4,
+      "gate_ms": 21.2,
+      "geometry_ms": 0.2,
+      "skin_ms": 266.7,
+      "rules_ms": 0.0,
+      "total_ms": 320.4
+    }
+  },
+  {
+    "id": "cond_erythema_flushed",
+    "filename": "cond_erythema_flushed.jpg",
+    "path": "C:\\Users\\Souvik\\OneDrive\\Desktop\\Programms\\AI face\\tests\\evaluation_dataset\\cond_erythema_flushed.jpg",
+    "cohort": "skin_conditions",
+    "label": "Facial Erythema / Flushed Redness",
+    "fitzpatrick_group": "II/III",
+    "lighting_condition": "balanced",
+    "passed_gate": true,
+    "quality_metrics": {
+      "score": 0.915,
+      "lighting": 0.941,
+      "sharpness": 1.0,
+      "pose": 0.784,
+      "passed": true
+    },
+    "warnings": [],
+    "face_shape": "round",
+    "face_symmetry": 0.946,
+    "face_ratios": {
+      "jaw_width_to_face_width": 0.88,
+      "forehead_width_to_face_width": 0.73,
+      "eye_distance_to_face_width": 0.5,
+      "nose_width_to_face_width": 0.34,
+      "lip_width_to_face_width": 0.46
+    },
+    "skin_scores": {
+      "redness": 0.91,
+      "pigmentation": 0.12,
+      "texture": 0.06,
+      "under_eye": 0.0,
+      "visible_spots": 1
+    },
+    "triggered_rules": [
+      "REDNESS_HIGH"
+    ],
+    "timings": {
+      "detect_ms": 28.0,
+      "gate_ms": 18.9,
+      "geometry_ms": 0.2,
+      "skin_ms": 264.2,
+      "rules_ms": 0.0,
+      "total_ms": 311.4
+    }
+  },
+  {
+    "id": "cond_pigmentation_uneven",
+    "filename": "cond_pigmentation_uneven.jpg",
+    "path": "C:\\Users\\Souvik\\OneDrive\\Desktop\\Programms\\AI face\\tests\\evaluation_dataset\\cond_pigmentation_uneven.jpg",
+    "cohort": "skin_conditions",
+    "label": "Hyperpigmentation Mottling",
+    "fitzpatrick_group": "II/III",
+    "lighting_condition": "balanced",
+    "passed_gate": true,
+    "quality_metrics": {
+      "score": 0.929,
+      "lighting": 0.948,
+      "sharpness": 1.0,
+      "pose": 0.824,
+      "passed": true
+    },
+    "warnings": [],
+    "face_shape": "round",
+    "face_symmetry": 0.974,
+    "face_ratios": {
+      "jaw_width_to_face_width": 0.89,
+      "forehead_width_to_face_width": 0.72,
+      "eye_distance_to_face_width": 0.5,
+      "nose_width_to_face_width": 0.33,
+      "lip_width_to_face_width": 0.46
+    },
+    "skin_scores": {
+      "redness": 0.37,
+      "pigmentation": 0.33,
+      "texture": 0.09,
+      "under_eye": 0.0,
+      "visible_spots": 1
+    },
+    "triggered_rules": [
+      "ALL_CLEAR"
+    ],
+    "timings": {
+      "detect_ms": 39.9,
+      "gate_ms": 15.4,
+      "geometry_ms": 0.1,
+      "skin_ms": 254.6,
+      "rules_ms": 0.0,
+      "total_ms": 310.0
+    }
+  },
+  {
+    "id": "cond_texture_rough",
+    "filename": "cond_texture_rough.jpg",
+    "path": "C:\\Users\\Souvik\\OneDrive\\Desktop\\Programms\\AI face\\tests\\evaluation_dataset\\cond_texture_rough.jpg",
+    "cohort": "skin_conditions",
+    "label": "Elevated Surface Roughness",
+    "fitzpatrick_group": "II/III",
+    "lighting_condition": "balanced",
+    "passed_gate": true,
+    "quality_metrics": {
+      "score": 0.917,
+      "lighting": 0.947,
+      "sharpness": 1.0,
+      "pose": 0.784,
+      "passed": true
+    },
+    "warnings": [],
+    "face_shape": "round",
+    "face_symmetry": 0.959,
+    "face_ratios": {
+      "jaw_width_to_face_width": 0.88,
+      "forehead_width_to_face_width": 0.73,
+      "eye_distance_to_face_width": 0.51,
+      "nose_width_to_face_width": 0.35,
+      "lip_width_to_face_width": 0.46
+    },
+    "skin_scores": {
+      "redness": 0.37,
+      "pigmentation": 0.69,
+      "texture": 1.0,
+      "under_eye": 0.0,
+      "visible_spots": 0
+    },
+    "triggered_rules": [
+      "PIGMENTATION_VARIATION",
+      "TEXTURE_ROUGH"
+    ],
+    "timings": {
+      "detect_ms": 33.9,
+      "gate_ms": 20.1,
+      "geometry_ms": 0.2,
+      "skin_ms": 225.5,
+      "rules_ms": 0.0,
+      "total_ms": 279.7
+    }
+  },
+  {
+    "id": "cond_undereye_shade",
+    "filename": "cond_undereye_shade.jpg",
+    "path": "C:\\Users\\Souvik\\OneDrive\\Desktop\\Programms\\AI face\\tests\\evaluation_dataset\\cond_undereye_shade.jpg",
+    "cohort": "skin_conditions",
+    "label": "Periorbital Under-Eye Shadow",
+    "fitzpatrick_group": "II/III",
+    "lighting_condition": "balanced",
+    "passed_gate": true,
+    "quality_metrics": {
+      "score": 0.915,
+      "lighting": 0.948,
+      "sharpness": 1.0,
+      "pose": 0.777,
+      "passed": true
+    },
+    "warnings": [],
+    "face_shape": "round",
+    "face_symmetry": 0.942,
+    "face_ratios": {
+      "jaw_width_to_face_width": 0.88,
+      "forehead_width_to_face_width": 0.73,
+      "eye_distance_to_face_width": 0.51,
+      "nose_width_to_face_width": 0.34,
+      "lip_width_to_face_width": 0.47
+    },
+    "skin_scores": {
+      "redness": 0.36,
+      "pigmentation": 0.27,
+      "texture": 0.08,
+      "under_eye": 1.0,
+      "visible_spots": 1
+    },
+    "triggered_rules": [
+      "UNDER_EYE_DARK"
+    ],
+    "timings": {
+      "detect_ms": 26.4,
+      "gate_ms": 12.5,
+      "geometry_ms": 0.1,
+      "skin_ms": 206.1,
+      "rules_ms": 0.0,
+      "total_ms": 245.1
+    }
+  },
+  {
+    "id": "cond_blemishes_spots",
+    "filename": "cond_blemishes_spots.jpg",
+    "path": "C:\\Users\\Souvik\\OneDrive\\Desktop\\Programms\\AI face\\tests\\evaluation_dataset\\cond_blemishes_spots.jpg",
+    "cohort": "skin_conditions",
+    "label": "Localized Blemish Clusters",
+    "fitzpatrick_group": "II/III",
+    "lighting_condition": "balanced",
+    "passed_gate": true,
+    "quality_metrics": {
+      "score": 0.641,
+      "lighting": 0.947,
+      "sharpness": 0.232,
+      "pose": 0.76,
+      "passed": true
+    },
+    "warnings": [
+      "Slight image softness detected; hold camera steady for maximum clarity."
+    ],
+    "face_shape": "round",
+    "face_symmetry": 0.934,
+    "face_ratios": {
+      "jaw_width_to_face_width": 0.88,
+      "forehead_width_to_face_width": 0.73,
+      "eye_distance_to_face_width": 0.51,
+      "nose_width_to_face_width": 0.35,
+      "lip_width_to_face_width": 0.46
+    },
+    "skin_scores": {
+      "redness": 0.44,
+      "pigmentation": 0.25,
+      "texture": 0.0,
+      "under_eye": 0.0,
+      "visible_spots": 7
+    },
+    "triggered_rules": [
+      "REDNESS_MODERATE",
+      "SPOTS_FEW"
+    ],
+    "timings": {
+      "detect_ms": 35.4,
+      "gate_ms": 20.5,
+      "geometry_ms": 0.3,
+      "skin_ms": 221.3,
+      "rules_ms": 0.0,
+      "total_ms": 277.5
+    }
+  }
+]
