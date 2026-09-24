@@ -21,6 +21,26 @@ present in an image — it does **not** diagnose medical conditions.
 
 ---
 
+## 📸 Sample Output & Live Testing Interface
+
+Live production scan through the full pipeline on Render — displaying facial geometry via 478 MediaPipe landmarks, OpenCV skin heuristics, deterministic rules, and AI recommendations:
+
+<p align="center">
+  <img src="docs/images/sample_scan_overview.png" alt="AI Face Analyzer Overview & Metrics" width="95%" />
+</p>
+<p align="center">
+  <em>Scanner overview with live landmark mesh overlay, overall facial score, bilateral symmetry, face shape classification, and skin characteristic meters.</em>
+</p>
+
+<p align="center">
+  <img src="docs/images/sample_scan_metrics_insights.png" alt="Quality Gate, Geometry Ratios & AI Recommendations" width="95%" />
+</p>
+<p align="center">
+  <em>Image quality gate validation, proportional facial geometry coordinate table, and rule-gated AI explanations with clinical disclaimers.</em>
+</p>
+
+---
+
 ## ✨ What's New in v0.5.0
  
 Building on the persistence and comparison capabilities from v0.4.0, this release hardens the service for production reliability, security, observability, and empirical skin-tone fairness:
